@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>המוזל | Mosel · שבוע של יין, נופים ואוכל</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{
+  --slate:#2b333b;
+  --slate-deep:#1d2329;
+  --riesling:#c9a227;
+  --river:#4f7d8c;
+  --leaf:#5b7553;
+  --paper:#f2f1ec;
+  --card:#ffffff;
+  --ink:#22282e;
+  --muted:#6b7480;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Assistant',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7}
+h1,h2,h3{font-family:'Frank Ruhl Libre',serif}
+.lang-page[hidden]{display:none}
+
+/* ---------- LANGUAGE TOGGLE ---------- */
+#langBtn{position:fixed;top:14px;left:14px;z-index:10000;
+  background:#fff;border:none;border-radius:22px;padding:8px 18px;cursor:pointer;
+  font:700 .9rem 'Assistant',sans-serif;color:var(--slate);
+  box-shadow:0 2px 10px rgba(0,0,0,.3);display:flex;align-items:center;gap:7px}
+#langBtn:hover{background:#f6f4ea}
+
+
+/* ---------- HERO ---------- */
+header{
+  background:linear-gradient(160deg,var(--slate-deep) 0%,var(--slate) 55%,#3a4a54 100%);
+  color:#f5f3ec;padding:70px 24px 90px;position:relative;overflow:hidden}
+header::after{
+  content:"";position:absolute;inset-inline:0;bottom:-2px;height:70px;
+  background:var(--paper);
+  clip-path:ellipse(75% 100% at 50% 100%)}
+.hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:2}
+.eyebrow{letter-spacing:.35em;font-size:.78rem;color:var(--riesling);font-weight:600;margin-bottom:18px}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:900;line-height:1.15;margin-bottom:16px}
+.hero-sub{font-size:1.15rem;color:#cdd4d9;max-width:640px;font-weight:300}
+.hero-stats{display:flex;gap:28px;margin-top:34px;flex-wrap:wrap}
+.hstat{border-inline-start:3px solid var(--riesling);padding-inline-start:14px}
+.hstat b{display:block;font-size:1.5rem;font-family:'Frank Ruhl Libre',serif}
+.hstat span{font-size:.85rem;color:#aab3ba}
+
+/* ---------- LAYOUT ---------- */
+main{max-width:900px;margin:0 auto;padding:30px 20px 80px}
+section{margin-bottom:64px}
+h2{font-size:1.9rem;font-weight:700;margin-bottom:8px;color:var(--slate)}
+.section-lead{color:var(--muted);margin-bottom:28px;max-width:640px}
+
+/* ---------- RIVER TIMELINE ---------- */
+.days{position:relative;padding-inline-start:34px}
+.days::before{
+  content:"";position:absolute;top:8px;bottom:8px;inset-inline-start:10px;width:5px;
+  background:linear-gradient(180deg,var(--river),var(--leaf) 60%,var(--riesling));
+  border-radius:6px;opacity:.55}
+.day{position:relative;margin-bottom:34px}
+.day::before{
+  content:"";position:absolute;inset-inline-start:-31px;top:14px;width:15px;height:15px;
+  background:var(--paper);border:4px solid var(--river);border-radius:50%}
+.day-card{background:var(--card);border-radius:14px;padding:26px 28px;
+  box-shadow:0 2px 14px rgba(43,51,59,.08);border-top:4px solid var(--river)}
+.day-card.wine{border-top-color:var(--riesling)}
+.day-card.food{border-top-color:#a3543f}
+.day-label{font-size:.75rem;letter-spacing:.25em;color:var(--muted);font-weight:600;margin-bottom:4px}
+.day h3{font-size:1.35rem;margin-bottom:4px}
+.route{font-size:.9rem;color:var(--river);font-weight:600;margin-bottom:14px}
+.day ul{list-style:none;margin-top:6px}
+.day li{padding:7px 0;border-bottom:1px dashed #e3e1d8;padding-inline-start:24px;position:relative}
+.day li:last-child{border-bottom:none}
+.day li::before{content:"";position:absolute;inset-inline-start:0;top:16px;width:9px;height:9px;
+  border-radius:50%;background:var(--leaf);opacity:.7}
+.day li.w::before{background:var(--riesling)}
+.day li.f::before{background:#a3543f}
+.day li b{font-weight:700}
+.tip{margin-top:14px;background:#f6f4ea;border-inline-start:4px solid var(--riesling);
+  padding:10px 14px;border-radius:8px;font-size:.92rem}
+.tip b{color:#8a6d12}
+
+/* ---------- MAP ---------- */
+#map{height:520px;border-radius:16px;box-shadow:0 2px 14px rgba(43,51,59,.12);z-index:1}
+.map-wrap{position:relative}
+#fsBtn{position:absolute;bottom:14px;right:14px;z-index:500;
+  background:#fff;border:none;border-radius:10px;padding:8px 14px;cursor:pointer;
+  font:600 .88rem 'Assistant',sans-serif;color:#2b333b;box-shadow:0 2px 8px rgba(0,0,0,.25);
+  display:flex;align-items:center;gap:6px}
+#fsBtn:hover{background:#f2f1ec}
+.map-wrap.fullscreen{position:fixed;inset:0;z-index:9999;background:#000}
+.map-wrap.fullscreen #map{height:100vh;width:100vw;border-radius:0}
+.map-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:.88rem;color:#4c545c}
+.leaflet-popup-content{font-family:'Assistant',sans-serif;font-size:.92rem;line-height:1.5;margin:10px 14px}
+.leaflet-popup-content b{font-family:'Frank Ruhl Libre',serif;font-size:1.02rem;color:#2b333b;display:block;margin-bottom:2px}
+.leaflet-popup-content .pd{color:#4f7d8c;font-weight:600;font-size:.8rem}
+.popup-rtl{direction:rtl;text-align:right}
+.popup-ltr{direction:ltr;text-align:left}
+
+/* ---------- WINERIES ---------- */
+.wineries{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:18px}
+.winery{background:var(--slate);color:#eceae2;border-radius:14px;padding:24px;position:relative;overflow:hidden}
+.winery::after{content:"";position:absolute;top:-30px;inset-inline-end:-30px;width:110px;height:110px;
+  border-radius:50%;background:radial-gradient(circle,rgba(201,162,39,.35),transparent 70%)}
+.winery .num{font-family:'Frank Ruhl Libre',serif;font-size:2rem;color:var(--riesling);font-weight:900;line-height:1}
+.winery h3{font-size:1.2rem;margin:8px 0 2px;color:#fff}
+.winery .loc{font-size:.82rem;color:#a9b3ba;margin-bottom:10px}
+.winery p{font-size:.93rem;color:#d4d9dc}
+.wcontact{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15);font-size:.85rem;color:#b8c0c6}
+.wcontact a{color:var(--riesling);text-decoration:none}
+.wcontact a:hover{text-decoration:underline}
+.wcontact span{display:block;margin-bottom:3px}
+.badge{display:inline-block;margin-top:12px;background:rgba(201,162,39,.15);color:var(--riesling);
+  border:1px solid rgba(201,162,39,.45);border-radius:20px;padding:2px 12px;font-size:.78rem;font-weight:600}
+
+/* ---------- MICHELIN ---------- */
+.michelin{background:linear-gradient(140deg,#3d2724,#5a352c);color:#f4ece4;border-radius:16px;
+  padding:36px 32px;position:relative;overflow:hidden}
+.michelin .stars{color:var(--riesling);font-size:1.4rem;letter-spacing:.3em;margin-bottom:8px}
+.michelin h3{font-size:1.7rem;color:#fff;margin-bottom:4px}
+.michelin .loc{color:#d9b9a4;font-size:.9rem;margin-bottom:16px}
+.michelin p{max-width:620px;color:#eadfd4}
+.michelin .alt{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.18);font-size:.92rem;color:#d9c6b6}
+
+/* ---------- FOOD ---------- */
+.food-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.food-card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(43,51,59,.07)}
+.food-card h4{font-family:'Frank Ruhl Libre',serif;font-size:1.05rem;color:var(--slate);margin-bottom:4px}
+.food-card .where{font-size:.8rem;color:var(--river);font-weight:600;margin-bottom:8px}
+.food-card p{font-size:.9rem;color:#4c545c}
+
+/* ---------- PRACTICAL ---------- */
+.practical{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.pcard{background:var(--card);border-radius:12px;padding:22px;border-inline-start:4px solid var(--leaf)}
+.pcard h4{font-size:1rem;margin-bottom:8px;color:var(--slate)}
+.pcard p,.pcard li{font-size:.9rem;color:#4c545c}
+.pcard ul{list-style:none}
+.pcard li{padding:3px 0}
+
+/* ---------- FUN STATS ---------- */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.stat-card{background:var(--card);border-radius:14px;padding:22px;text-align:center;
+  box-shadow:0 2px 10px rgba(43,51,59,.07);border-bottom:4px solid var(--riesling)}
+.stat-card .big{font-family:'Frank Ruhl Libre',serif;font-size:2.2rem;font-weight:900;color:var(--slate);line-height:1.1}
+.stat-card .unit{font-size:.95rem;color:var(--riesling);font-weight:700;margin-bottom:8px}
+.stat-card p{font-size:.88rem;color:#4c545c;line-height:1.5}
+.stat-card:nth-child(even){border-bottom-color:var(--river)}
+
+/* ---------- QUIZ ---------- */
+.quiz-q{background:var(--card);border-radius:14px;padding:22px 24px;margin-bottom:18px;
+  box-shadow:0 2px 10px rgba(43,51,59,.07)}
+.quiz-q h4{font-family:'Frank Ruhl Libre',serif;font-size:1.08rem;color:var(--slate);margin-bottom:12px}
+.quiz-q .qnum{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+  border-radius:50%;background:var(--riesling);color:#fff;font:700 .85rem 'Assistant',sans-serif;
+  margin-inline-end:8px;vertical-align:middle}
+.qopts{display:grid;gap:8px}
+.qopt{background:#f6f5ef;border:2px solid #e3e1d8;border-radius:10px;padding:10px 14px;cursor:pointer;
+  font:500 .95rem 'Assistant',sans-serif;color:var(--ink);text-align:start;transition:all .15s}
+.qopt:hover:not(:disabled){border-color:var(--river);background:#eef2f0}
+.qopt:disabled{cursor:default}
+.qopt.correct{background:#e4efe2;border-color:var(--leaf);font-weight:700}
+.qopt.wrong{background:#f4e3de;border-color:#a3543f;opacity:.85}
+.qexp{display:none;margin-top:12px;background:#f6f4ea;border-inline-start:4px solid var(--riesling);
+  padding:10px 14px;border-radius:8px;font-size:.9rem;color:#4c545c}
+.quiz-q.answered .qexp{display:block}
+.quiz-score{background:var(--slate);color:#f5f3ec;border-radius:14px;padding:24px;text-align:center;
+  font-family:'Frank Ruhl Libre',serif;font-size:1.25rem;display:none}
+.quiz-score b{color:var(--riesling);font-size:1.8rem}
+
+/* ---------- QUIZ MODAL ---------- */
+.quiz-fab{position:fixed;bottom:24px;right:24px;z-index:8000;
+  background:var(--riesling);color:#fff;border:none;border-radius:50px;padding:14px 22px;cursor:pointer;
+  font:700 1rem 'Assistant',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.35);
+  display:flex;align-items:center;gap:8px}
+.quiz-fab:hover{filter:brightness(1.1)}
+.quiz-overlay{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);
+  justify-content:center;align-items:flex-start;padding:40px 16px;overflow-y:auto}
+.quiz-overlay.open{display:flex}
+.quiz-modal{background:var(--paper);border-radius:18px;max-width:720px;width:100%;padding:36px 28px;
+  position:relative;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.quiz-modal-close{position:absolute;top:14px;inset-inline-end:14px;background:none;border:none;
+  font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1}
+.quiz-modal h2{font-family:'Frank Ruhl Libre',serif;font-size:1.6rem;color:var(--slate);margin-bottom:6px}
+.quiz-modal .section-lead{margin-bottom:20px}
+
+/* ---------- TRACKER ---------- */
+.tracker-fab{position:fixed;bottom:24px;left:24px;z-index:8000;
+  background:var(--river);color:#fff;border:none;border-radius:50px;padding:14px 22px;cursor:pointer;
+  font:700 1rem 'Assistant',sans-serif;box-shadow:0 4px 16px rgba(0,0,0,.35);
+  display:flex;align-items:center;gap:8px}
+.tracker-fab:hover{filter:brightness(1.1)}
+.tracker-overlay{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);
+  justify-content:center;align-items:flex-start;padding:40px 16px;overflow-y:auto}
+.tracker-overlay.open{display:flex}
+.tracker-modal{background:var(--paper);border-radius:18px;max-width:800px;width:100%;padding:36px 28px;
+  position:relative;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.tracker-modal-close{position:absolute;top:14px;inset-inline-end:14px;background:none;border:none;
+  font-size:1.5rem;cursor:pointer;color:var(--muted);line-height:1}
+.tracker-modal h2{font-family:'Frank Ruhl Libre',serif;font-size:1.6rem;color:var(--slate);margin-bottom:16px}
+.titem{background:var(--card);border-radius:12px;padding:18px 20px;margin-bottom:14px;
+  border-inline-start:5px solid var(--muted);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.titem.confirmed{border-inline-start-color:#5b7553}
+.titem.pending{border-inline-start-color:#c9a227}
+.titem.waiting{border-inline-start-color:#a3543f}
+.titem.action{border-inline-start-color:var(--river)}
+.titem h4{font-size:1rem;margin-bottom:4px;color:var(--slate)}
+.titem .tstatus{font-weight:700;font-size:.9rem;margin-bottom:6px}
+.titem .tstatus.green{color:#5b7553}
+.titem .tstatus.yellow{color:#8a6d12}
+.titem .tstatus.red{color:#a3543f}
+.titem .tstatus.blue{color:var(--river)}
+.titem p{font-size:.9rem;color:#4c545c;margin:0}
+.titem .taction{margin-top:8px;background:#f6f4ea;border-radius:8px;padding:8px 12px;font-size:.88rem;color:#8a6d12}
+.tsep{font-family:'Frank Ruhl Libre',serif;font-size:1.1rem;color:var(--muted);margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid #e3e1d8}
+
+.bottom-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;padding:30px 20px 10px;max-width:900px;margin:0 auto}
+.bottom-btn{flex:1;min-width:200px;padding:18px 24px;border:none;border-radius:14px;cursor:pointer;
+  font:700 1.05rem 'Assistant',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 3px 12px rgba(0,0,0,.15);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.bottom-btn:active{transform:scale(.97)}
+.bottom-btn.quiz-btn{background:var(--riesling);color:#fff}
+.bottom-btn.tracker-btn{background:var(--river);color:#fff}
+
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 50px}
+
+@media (max-width:600px){
+  .day-card{padding:20px 18px}
+  header{padding:50px 18px 80px}
+}
+@media (prefers-reduced-motion: no-preference){
+  .day-card{transition:transform .25s ease}
+  .day-card:hover{transform:translateY(-3px)}
+}
+</style>
+</head>
+<body>
+
+<button id="langBtn" type="button">🌐 English</button>
+
+<!-- ======================================================= -->
+<!-- ==================== HEBREW PAGE ====================== -->
+<!-- ======================================================= -->
+<div class="lang-page" id="page-he" dir="rtl">
+
+<header>
+  <div class="hero-inner">
+    <div class="eyebrow">עמק המוזל · גרמניה · 7 ימים · 29.4 עד 6.5.2027</div>
+    <h1>המוזל: שבוע בין צפחה, ריזלינג ונהר מתפתל</h1>
+    <p class="hero-sub">מסלול של שבוע לאורך הנהר, מקוכם והטירות בצפון ועד טרייר הרומית בדרום: חמישה יקבים מהשורה הראשונה של גרמניה, כרמים בשיפוע הכי תלול באירופה, טירות מהאגדות, וערב שיא ביום שלפני האחרון במסעדת שלושה כוכבי מישלן.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>8</b><span>ימים</span></div>
+      <div class="hstat"><b>5</b><span>יקבים מובילים</span></div>
+      <div class="hstat"><b>★★★</b><span>ארוחת מישלן ביום ה-6</span></div>
+      <div class="hstat"><b>2</b><span>בסיסי לינה</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <h2>המסלול יום אחר יום</h2>
+  <p class="section-lead">התאריכים המומלצים: חמישי 29.4 עד חמישי 6.5.2027 (8 ימים). נחיתה בערב, חזרה בערב היום השמיני. מאי הוא החודש האידיאלי למוזל: ירוק, פורח, שקט מתיירים ומחירים נוחים. הכיוון הכללי: נגד זרימת הנהר, מצפון (קוכם) לדרום (טרייר). כך ערב המישלן נופל בדיוק ביום שלפני האחרון, ליד בסיס הלינה, בלי נסיעות ארוכות אחריו. טיסות אל על ישירות הלוך-חזור לפרנקפורט (הפירוט בפרטים הפרקטיים). רכב שכור חובה. לינה: 3 לילות קוכם, 4 לילות ברנקסטל-קוס.</p>
+
+  <div class="days">
+
+    <div class="day">
+      <div class="day-card">
+        <div class="day-label">יום 1 · חמישי · 29.4.2027</div>
+        <h3>נחיתה ונסיעה לקוכם</h3>
+        <div class="route">LY355: TLV 15:00 → FRA 18:35 ← קוכם (לינה: קוכם)</div>
+        <ul>
+          <li>נחיתה בפרנקפורט ב-18:35, איסוף רכב ונסיעה לקוכם (כשעה וחצי). הגעה סביב 21:00</li>
+          <li>צ'ק-אין והתרעננות, ערב קצר על הטיילת מול הנהר</li>
+          <li class="f">כוס ריזלינג ראשונה עם פלאמקוכן בוויינשטובה מקומית, אם עדיין פתוח</li>
+        </ul>
+        <div class="tip"><b>טיפ:</b> הטיסה נוחתת מאוחר, אז היום הזה הוא רק הגעה ושינה. כל הפעולה מתחילה מחר בבוקר.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">יום 2 · שישי · 30.4.2027</div>
+        <h3>בורג אלץ וקוכם</h3>
+        <div class="route">קוכם ← בורג אלץ ← קוכם (לינה: קוכם)</div>
+        <ul>
+          <li>השכם בבוקר: נסיעה ל<b>בורג אלץ</b> (40 דקות), הטירה היפה בגרמניה, מוסתרת ביער. הליכה יפה של כ-40 דקות מחניון Ringelsteiner Mühle. להגיע בפתיחה לפני ההמונים</li>
+          <li>חזרה לקוכם: <b>טירת רייכסבורג</b> מעל העיר, סיור מודרך והליכה חזרה דרך הכרמים</li>
+          <li>אחר הצהריים: הרכבל של קוכם לתצפית <b>Pinnerkreuz</b>, הזווית הכי יפה על העיר, הטירה והנהר יחד</li>
+          <li class="f">ערב: Riesling Sekt (מבעבע מקומי) וארוחה ב-Alte Gutsschänke, מרתף יין עתיק וחמים בסמטאות קוכם</li>
+        </ul>
+        <div class="tip"><b>טיפ:</b> יום מלא בקוכם בלי לחץ. שתי טירות, שקיעה מהרכבל וערב ראשון רגוע.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card">
+        <div class="day-label">יום 3 · שבת · 1.5.2027</div>
+        <h3>ביילשטיין, וינינגן והיקב הראשון</h3>
+        <div class="route">קוכם ← ביילשטיין ← וינינגן ← קוכם (לינה: קוכם)</div>
+        <ul>
+          <li>שייט צהריים על המוזל לביילשטיין, "פנינת המוזל", כפר ברוקי זעיר ומושלם. קפה ועוגה ועלייה לחורבות טירת Metternich</li>
+          <li class="w">אחר הצהריים: טעימות אצל <b>Heymann-Löwenstein</b> בווינינגן (20 דקות מקוכם), מלך הטרסות של המוזל התחתון וריזלינג יבש וסלעי</li>
+          <li class="f">ערב: חזרה לקוכם, ארוחה על הטיילת</li>
+        </ul>
+        <div class="tip"><b>סוד של מקומיים:</b> וינינגן מקיימת בסוף אוגוסט את פסטיבל היין העתיק ביותר בגרמניה. במאי לא תתפסו אותו, אבל תקבלו את הכפר בשיא הירוק, בלי המוני תיירים ועם אור שקיעה ארוך במיוחד.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">יום 4 · ראשון · 2.5.2027</div>
+        <h3>הקלמונט וטראבן-טרארבך: היום האתגרי</h3>
+        <div class="route">קוכם ← ברם ← טראבן-טרארבך ← ברנקסטל-קוס (לינה: ברנקסטל-קוס)</div>
+        <ul>
+          <li><b>Calmont Klettersteig</b>: מסלול ההליכה בכרם התלול ביותר באירופה מעל ברם, עם סולמות וכבלים. כ-3 שעות, נוף עוצר נשימה על פרסת הנהר</li>
+          <li>גרסה קלה: עלייה ברכב לתצפית Calmont-Gipfelkreuz או שביל הפנורמה מברם</li>
+          <li>בדרך: עצירה בתצפית <b>Marienburg</b> מעל פינדריך, הנקודה שבה רואים את הנהר משני צידי רכס אחד</li>
+          <li>אחר הצהריים בטראבן-טרארבך: אדריכלות אר-נובו וסיור במרתפי היין התת-קרקעיים של העיר</li>
+          <li class="f">ערב: הגעה לברנקסטל-קוס, צ'ק-אין לארבעה לילות וארוחה בעיר העתיקה</li>
+        </ul>
+        <div class="tip"><b>ציוד:</b> לקלטרשטייג צריך נעלי הליכה טובות, מים והרבה בטחון בגובה. לא ליציאה בגשם.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">יום 5 · שני · 3.5.2027</div>
+        <h3>ברנקסטל-קוס, בירת היין של המוזל</h3>
+        <div class="route">יום רגלי בברנקסטל-קוס (לינה: ברנקסטל-קוס)</div>
+        <ul>
+          <li>העיר העתיקה: כיכר השוק, בתי העץ הצבועים והבית המחודד (Spitzhäuschen)</li>
+          <li>עלייה רגלית לחורבות טירת Landshut דרך כרם ה-<b>Bernkasteler Doctor</b>, הכרם היקר והמפורסם ביותר בגרמניה</li>
+          <li class="w">צהריים: <b>Vinothek במרתפי מנזר St. Nikolaus-Hospital</b> בקוס, מרתף אבן מקומר עם כ-150 יינות מוזל בטעימה חופשית</li>
+          <li class="w">אחר הצהריים: טעימות אצל <b>Dr. Loosen</b>, באחוזה יפהפייה על גדת הנהר</li>
+          <li class="f">ערב: Doctor Weinstube או Rotisserie Royale בסמטאות העיר העתיקה</li>
+        </ul>
+        <div class="tip"><b>טיפ:</b> יום בלי רכב בכלל. הכל הליכה, אפשר להתפרע בטעימות.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">יום 6 · שלישי · 4.5.2027</div>
+        <h3>ולן וזלטינגן: יום היקבים הגדול</h3>
+        <div class="route">ברנקסטל ← ולן ← זלטינגן (לינה: ברנקסטל-קוס)</div>
+        <ul>
+          <li class="w">בוקר: <b>Joh. Jos. Prüm</b> בוולן, יקב פולחן של ממש. ביקורים בתיאום אישי מראש בלבד, ושווה כל מאמץ</li>
+          <li>הליכה בשביל הכרמים מוולן לזלטינגן לאורך ה-Wehlener Sonnenuhr, שעון השמש המפורסם בין הגפנים (כ-4 ק"מ), עם פיקניק מהשוק ליד אחת מבקתות הכורמים בין הגפנים</li>
+          <li>הרחבה למי שיש כוח: המשך לכיוון אורציג לראות את ה-<b>Ürziger Würzgarten</b>, "גן התבלינים", כרם בצפחה אדומה נדירה שנותנת ריזלינג מתובל ואקזוטי</li>
+          <li class="w">אחר הצהריים: <b>Markus Molitor</b>, מהיקבים המרשימים בגרמניה, עם עשרות יינות חד-כרמיים</li>
+          <li class="f">ערב: ארוחה כפרית קלה בגסטהאוס בזלטינגן, לשמור מקום בבטן למחר</li>
+        </ul>
+        <div class="tip"><b>טיפ:</b> אם JJ Prüm לא זמינים, חלופה מצוינת באותו כפר היא S.A. Prüm עם מרכז מבקרים מסודר וטעימות ללא תיאום מסובך.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card food">
+        <div class="day-label">יום 7 · רביעי · 5.5.2027 · ערב השיא</div>
+        <h3>פיספורט, יקב אחרון וארוחת המישלן</h3>
+        <div class="route">ברנקסטל ← נוימאגן-דרון ← בראונברג ← פיספורט ← ברנקסטל (לינה: ברנקסטל-קוס או במלון של schanz)</div>
+        <ul>
+          <li>בוקר רגוע: נסיעה נופית לנוימאגן-דרון, "כפר היין העתיק בגרמניה". החוויה המיוחדת: הפלגה קצרה על <b>Stella Noviomagi</b>, שחזור שייט של ספינת יין רומית עם כוס ריזלינג ביד (בעונה, לתאם מראש)</li>
+          <li class="w">צהריים: טעימות אצל <b>Fritz Haag</b> בבראונברג, מאדוני ה-Juffer Sonnenuhr (בתיאום מראש)</li>
+          <li>אחר הצהריים: תצפית על כרם <b>Piesporter Goldtröpfchen</b>, אמפיתיאטרון הכרמים המפורסם, ומנוחה לפני הערב</li>
+          <li class="f">ערב: <b>schanz.restaurant</b> בפיספורט, שלושה כוכבי מישלן. ערב השיא של הטיול, 15 דקות בלבד מברנקסטל</li>
+        </ul>
+        <div class="tip"><b>חשוב מאוד:</b> schanz סגורים ראשון עד שלישי (מאומת). ערב המישלן שלנו נופל על רביעי (5.5), היום הראשון שהם פתוחים בשבוע, מושלם. להזמין חודשיים-שלושה מראש. האופציה הכי נוחה: לישון במלון הקטן של המסעדה עצמה ולוותר לגמרי על נהיגה אחרי היין.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card">
+        <div class="day-label">יום 8 · חמישי · 6.5.2027</div>
+        <h3>טרייר הרומית והמראה</h3>
+        <div class="route">ברנקסטל ← טרייר ← פרנקפורט (LY356: FRA 19:45 → TLV 00:50)</div>
+        <ul>
+          <li>צ'ק-אאוט ונסיעה לטרייר, העיר העתיקה ביותר בגרמניה (כ-50 דקות). יום רביעי, הכל פתוח ובלי המונים</li>
+          <li><b>פורטה ניגרה</b>, הקתדרלה, כיכר השוק והאמפיתיאטרון הרומי (אתרי מורשת עולמית)</li>
+          <li class="f">ארוחת צהריים אחרונה בוויינשטובה מול הקתדרלה</li>
+          <li>נסיעה חזרה לפרנקפורט (כשעתיים וחצי), החזרת הרכב וטיסת אל על ישירה הביתה בערב</li>
+        </ul>
+        <div class="tip"><b>למה חזרה מפרנקפורט:</b> אין טיסות ישירות מלוקסמבורג לתל אביב, ואל על טסה ישירות רק מפרנקפורט. החזרת הרכב באותה מדינה גם חוסכת דמי drop-off של 100 עד 200 אירו. לצאת מטרייר עד 14:00 לטיסת ערב. יתרון של רביעי: טרייר הרבה יותר שקטה מסוף שבוע.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>מפת הטיול</h2>
+  <p class="section-lead">כל התחנות ממוספרות לפי סדר הביקור, מהנחיתה בפרנקפורט (1) ועד טיסת החזרה מפרנקפורט (16). לחיצה על כל נקודה מציגה מה עושים שם ובאיזה יום.</p>
+  <div class="map-slot"></div>
+  <div class="map-legend">
+    <span>🍇 יקבים</span>
+    <span>🍽️ ארוחת המישלן</span>
+    <span>🛏️ בסיסי לינה</span>
+    <span>🏰 🥾 ⛴️ 🌄 אטרקציות ותצפיות</span>
+    <span>✈️ 🏁 פרנקפורט: נחיתה (1) וטיסת החזרה (16), אל על ישיר</span>
+  </div>
+</section>
+
+<section>
+  <h2>חמשת היקבים</h2>
+  <p class="section-lead">כולם דורשים תיאום מראש במייל (באנגלית, עונים מהר). טעימה טיפוסית: 6 עד 10 יינות, 15 עד 30 אירו לאדם, לרוב מקוזז בקנייה.</p>
+  <div class="wineries">
+    <div class="winery">
+      <div class="num">01</div>
+      <h3>Heymann-Löwenstein</h3>
+      <div class="loc">וינינגן · המוזל התחתון (Terrassenmosel) · יום 2</div>
+      <p>חלוצי הריזלינג היבש מהטרסות התלולות של המוזל התחתון. יינות מינרליים, עמוקים וסלעיים מכרמי Uhlen ו-Röttgen. פתיחה מושלמת לטיול, בסגנון שונה לגמרי מהמוזל התיכון.</p>
+      <span class="badge">ריזלינג יבש מטרסות</span>
+      <div class="wcontact"><span>📧 <a href="mailto:info@heymann-loewenstein.com">info@heymann-loewenstein.com</a></span><span>📞 +49 2606 1919</span><span>🌐 <a href="https://www.heymann-loewenstein.com" target="_blank">heymann-loewenstein.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>טעימה:</b> סיור מרתף מודרך + 6 יינות טרואר: Schieferterrassen, Von Blauem Schiefer, Kirchberg, Stolzenberg, Röttgen ו-Uhlen</span><span>💶 <b>מחיר:</b> 40€ לאדם (200€ לקבוצה)</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">02</div>
+      <h3>Dr. Loosen</h3>
+      <div class="loc">ברנקסטל-קוס · יום 4</div>
+      <p>ארני לוזן הפך את היקב המשפחתי בן 200 השנים לשגריר העולמי של ריזלינג המוזל. אחוזה יפהפייה על גדת הנהר וטעימות מסודרות למבקרים.</p>
+      <span class="badge">הכי נגיש למבקרים</span>
+      <div class="wcontact"><span>📧 <a href="mailto:booking@drloosen.de">booking@drloosen.de</a></span><span>📞 +49 6531 3426</span><span>🌐 <a href="https://www.drloosen.com" target="_blank">drloosen.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>טעימה:</b> 5 יינות לבחירה (20€) או 7 יינות מובחרים (30€). כרמי Wehlener Sonnenuhr, Ürziger Würzgarten, Erdener Prälat ועוד</span><span>💶 <b>מחיר:</b> 20€ / 30€ לאדם (100-150€ לקבוצה). ללא סיור כרמים/מרתפים, טעימה בלבד</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">03</div>
+      <h3>Joh. Jos. Prüm</h3>
+      <div class="loc">ולן · יום 5</div>
+      <p>אולי היקב הנערץ ביותר בגרמניה. ריזלינגים מ-Wehlener Sonnenuhr עם יכולת התיישנות של עשורים. ביקור אצלם הוא חוויה כמעט דתית לחובבי ריזלינג.</p>
+      <span class="badge">Kabinett & Spätlese אגדיים</span>
+      <div class="wcontact"><span>📧 <a href="mailto:jjpruem@t-online.de">jjpruem@t-online.de</a></span><span>📞 +49 6531 3091</span><span>🌐 <a href="https://www.jjpruem.com" target="_blank">jjpruem.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>טעימה:</b> טעימה אישית של 6-8 יינות Wehlener Sonnenuhr ו-Graacher Himmelreich ברמות Kabinett, Spätlese ו-Auslese. דמי הטעימה מקוזזים מקנייה</span><span>💶 <b>מחיר:</b> כ-15-25€ לאדם (משתנה, בתיאום אישי)</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">04</div>
+      <h3>Markus Molitor</h3>
+      <div class="loc">ולן · יום 5</div>
+      <p>אימפריה של דיוק: עשרות יינות חד-כרמיים בשלוש רמות מתיקות (כמוסות לבנות, ירוקות, זהובות). כמה מיינותיו קיבלו 100 נקודות פארקר.</p>
+      <span class="badge">גם פינו נואר מצוין</span>
+      <div class="wcontact"><span>📧 <a href="mailto:info@markusmolitor.com">info@markusmolitor.com</a></span><span>📞 +49 6532 954000</span><span>🌐 <a href="https://www.markusmolitor.com" target="_blank">markusmolitor.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>טעימה:</b> בחירה אישית מתוך 40+ יינות בווינותק של בית Klosterberg: ריזלינג חד-כרמי בכמוסות לבנות (יבש), ירוקות (חצי-יבש) וזהובות (מתוק). גם פינו נואר ופינו בלאן</span><span>💶 <b>מחיר:</b> כ-20€ לאדם (100€ לקבוצה)</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">05</div>
+      <h3>Fritz Haag</h3>
+      <div class="loc">בראונברג · יום 6</div>
+      <p>מהמשפחות הוותיקות של המוזל, אדוני הכרם Brauneberger Juffer Sonnenuhr. סגנון מלוטש, אלגנטי ומדויק, נחשב לאחד היקבים העקביים בגרמניה. סיום מושלם לפני ערב המישלן.</p>
+      <span class="badge">אלגנטיות טהורה</span>
+      <div class="wcontact"><span>📧 <a href="mailto:info@weingut-fritz-haag.de">info@weingut-fritz-haag.de</a></span><span>📞 +49 6534 410</span><span>🌐 <a href="https://www.weingut-fritz-haag.de" target="_blank">weingut-fritz-haag.de</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>טעימה:</b> 6-8 ריזלינגים מכרמי Brauneberger Juffer ו-Juffer Sonnenuhr, מיבש ועד Auslese. חדר הטעימות עם נוף ישיר על הכרם</span><span>💶 <b>מחיר:</b> כ-15-25€ לאדם (משתנה, מקוזז מקנייה)</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>הארוחה הגדולה · יום 6</h2>
+  <div class="michelin">
+    <div class="stars">★ ★ ★</div>
+    <h3>schanz. restaurant</h3>
+    <div class="loc">פיספורט · שלושה כוכבי מישלן · שף תומאס שאנץ · ערב היום שלפני האחרון</div>
+    <p>בן המקום שהתמחה אצל גדולי השפים של גרמניה (הראלד וולפארט, קלאוס ארפורט) וחזר לעסק המשפחתי הקטן בפיספורט, בלב כרם ה-Goldtröpfchen. מטבח צרפתי-מודרני מדויק להפליא, רשימת יינות מוזל יוצאת דופן, ומחירים הוגנים במפתיע לרמה הזאת. תפריט טעימות מלא: בסביבות 250 עד 300 אירו לאדם לפני יין. המיקום מושלם למסלול: רבע שעה מבסיס הלינה בברנקסטל, ואפשר גם לישון במלון של המסעדה.</p>
+    <div class="alt"><b>חלופות אם אין מקום:</b> Waldhotel Sonnora בדרייס (שלושה כוכבים, כ-25 דקות מברנקסטל), או Rüssel's Landhaus ליד טריטנהיים (כוכב אחד, אווירה כפרית מקסימה).</div>
+  </div>
+</section>
+
+<section>
+  <h2>אוכל ויין בדרך</h2>
+  <p class="section-lead">מעבר לערב המישלן, המוזל הוא גן עדן של אוכל כפרי פשוט וטוב שהולך מושלם עם ריזלינג.</p>
+  <div class="food-grid">
+    <div class="food-card">
+      <h4>פלאמקוכן (Flammkuchen)</h4>
+      <div class="where">בכל ויינשטובה</div>
+      <p>"פיצה" דקיקה עם שמנת, בצל ובייקון. המנה הלאומית של אזורי היין, נהדרת עם ריזלינג יבש.</p>
+    </div>
+    <div class="food-card">
+      <h4>וינצרטלר (צלחת הכורם)</h4>
+      <div class="where">מרתפי יין</div>
+      <p>קרש עם גבינות, נקניקים, לחם כפרי וחמוצים. הליווי הקלאסי לטעימות.</p>
+    </div>
+    <div class="food-card">
+      <h4>ריזלינג-קרם ברולה ושזיפים</h4>
+      <div class="where">ברנקסטל וקוכם</div>
+      <p>קינוחים על בסיס יין וקוכן שזיפים (Zwetschgenkuchen) בעונה. עם קפה אחר הצהריים.</p>
+    </div>
+    <div class="food-card">
+      <h4>פדרוויסר (Federweisser)</h4>
+      <div class="where">אם מגיעים בסתיו</div>
+      <p>יין תוסס חצי-מותסס שנמכר רק בעונת הבציר, מוגש עם עוגת בצל. חוויה עונתית מקומית.</p>
+    </div>
+    <div class="food-card">
+      <h4>שוק ומעדניות בטרייר</h4>
+      <div class="where">Hauptmarkt, טרייר</div>
+      <p>שוק יומי עם דוכני גבינות, לחמים ופירות. מושלם לארוחת הצהריים של היום האחרון.</p>
+    </div>
+    <div class="food-card">
+      <h4>אפרסק הכרמים האדום (Weinbergpfirsich)</h4>
+      <div class="where">בכל האזור</div>
+      <p>אפרסק בר אדום שגדל רק בין כרמי המוזל. ליקר, ריבה וקינוחים ממנו הם המזכרת הקולינרית הכי מקומית שיש. חובה לטעום את הליקר עם Sekt.</p>
+    </div>
+    <div class="food-card">
+      <h4>Sekt מקומי</h4>
+      <div class="where">קוכם ווינינגן</div>
+      <p>מבעבע גרמני בשיטה המסורתית מריזלינג. יצרנים קטנים לאורך הנהר עושים גרסאות מצוינות במחירים נהדרים.</p>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <h2>הטיול במספרים (המשעשעים)</h2>
+  <p class="section-lead">כמה נתונים שיעשו לכם חשק לצאת לדרך, וגם יתנו חומר לשיחה ליד כוס הריזלינג הראשונה.</p>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="big">~650</div><div class="unit">ק"מ נהיגה</div><p>סך הכל בשבוע. פחות מתל אביב-אילת הלוך-חזור, אבל עם 16 תחנות, 5 יקבים ואפס פקקים באיילון.</p></div>
+    <div class="stat-card"><div class="big">65°</div><div class="unit">שיפוע הקלמונט</div><p>הכרם התלול באירופה. לשם השוואה, מדרגות נעות בקניון עומדות על 30 מעלות. הכורמים שם עובדים עם ריתמות.</p></div>
+    <div class="stat-card"><div class="big">~50</div><div class="unit">יינות בטעימה</div><p>חמישה יקבים ועוד ה-Vinothek עם 150 יינות פתוחים. בקצב סביר תטעמו יותר יינות בשבוע מרוב האנשים בשנה.</p></div>
+    <div class="stat-card"><div class="big">2,000+</div><div class="unit">שנות יין</div><p>הרומאים נטעו כאן גפנים במאה הראשונה לספירה. אתם תשתו את הגרסה המשודרגת של מה ששתו הלגיונרים.</p></div>
+    <div class="stat-card"><div class="big">×2.7</div><div class="unit">נהר עקום</div><p>המוזל כל כך מתפתל שהוא עושה 243 ק"מ בגרמניה בקו אווירי של כ-90 ק"מ. אתם תמיד תגיעו לפניו.</p></div>
+    <div class="stat-card"><div class="big">~800</div><div class="unit">מטר טיפוס מצטבר</div><p>קלמונט, טירת Landshut, רייכסבורג ובורג אלץ יחד. כמו לעלות פעמיים למצדה בשביל הנחש, רק עם יין בסוף.</p></div>
+    <div class="stat-card"><div class="big">3:2,000</div><div class="unit">כוכבים לתושבים</div><p>לפיספורט הזעירה יש 3 כוכבי מישלן על כ-2,000 תושבים. יחס כוכבים לנפש שמביך את פריז.</p></div>
+    <div class="stat-card"><div class="big">100+</div><div class="unit">שנות גפן</div><p>בכרמים התלולים שורדות גפנים בנות מאה ויותר על כנה מקורית, מהעתיקות באירופה. הפילוקסרה לא אוהבת צפחה.</p></div>
+  </div>
+</section>
+
+
+
+<section>
+  <h2>פרטים פרקטיים</h2>
+  <div class="practical">
+    <div class="pcard" style="border-inline-start-color:#c9a227">
+      <h4>✈️ הטיסות המומלצות</h4>
+      <ul>
+        <li><b>הלוך:</b> אל על ישיר TLV ← FRA, LY355, חמישי 29.4.2027, TLV 15:00 → FRA 18:35 (4.5 שעות, מגיעים בערב ונוסעים ישר לקוכם)</li>
+        <li><b>חזור:</b> אל על ישיר FRA ← TLV, LY356, חמישי 6.5.2027, FRA 19:45 → TLV 00:50+1 (אחרי יום מלא בטרייר)</li>
+        <li><b>מחיר צפוי:</b> כ-400 עד 550 דולר לאדם הלוך-חזור במאי. להזמין ברגע שהמכירה נפתחת (צפוי יולי-אוגוסט 2026) ולעקוב עם התראת מחיר ב-Google Flights ובאתר אל על</li>
+        <li><b>חלופות אם המחיר גבוה:</b> לופטהנזה (ישיר, לרוב זול מעט מאל על) או אגיאן דרך אתונה (הזולה ביותר, עם עצירה)</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>הגעה ותחבורה</h4>
+      <ul>
+        <li>נחיתה והמראה מפרנקפורט, איסוף והחזרת רכב באותו מקום</li>
+        <li>רכב שכור חובה, הכבישים לאורך הנהר נוחים ויפים</li>
+        <li>בימי טעימות: לתאם נהג תורן או להשתמש במוניות מקומיות</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>עונה מומלצת</h4>
+      <ul>
+        <li>מאי-יוני: ירוק, פורח ורגוע</li>
+        <li>ספטמבר-אוקטובר: בציר, פסטיבלי יין ופדרוויסר, הכי חגיגי (וגם הכי עמוס)</li>
+        <li>שני פסטיבלים ששווה לכוון אליהם: פסטיבל היין של וינינגן (סוף אוגוסט, העתיק בגרמניה) ופסטיבל היין הגדול של ברנקסטל (תחילת ספטמבר, עם זיקוקים מעל הנהר)</li>
+        <li>להימנע מנובמבר-מרץ, הרבה יקבים ומסעדות סגורים</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>לינה מומלצת</h4>
+      <ul>
+        <li>קוכם (3 לילות): חדר עם מרפסת לנהר, או ביילשטיין למי שרוצה שקט מוחלט</li>
+        <li>ברנקסטל-קוס (4 לילות): מלון בוטיק או צימר בין בתי העץ</li>
+        <li>אופציה לערב המישלן: לילה במלון של schanz בפיספורט במקום הלילה הרביעי בברנקסטל</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>תקציב משוער לזוג</h4>
+      <ul>
+        <li>לינה 7 לילות: 900 עד 1,400 אירו</li>
+        <li>ארוחת המישלן: 600 עד 800 אירו כולל יין</li>
+        <li>טעימות ביקבים: 150 עד 250 אירו</li>
+        <li>אוכל, רכב ואטרקציות: 900 עד 1,200 אירו</li>
+        <li><b>סה"כ: כ-2,600 עד 3,600 אירו (בלי טיסות ויין לקנייה הביתה)</b></li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>תיאומים שחובה לעשות מראש</h4>
+      <ul>
+        <li>schanz.restaurant ליום 6: להזמין 2-3 חודשים מראש, ולבנות את סדר הימים לפי ימי הפתיחה שלהם</li>
+        <li>JJ Prüm: מייל אישי, גמישות בתאריכים</li>
+        <li>שאר היקבים: שבוע-שבועיים מראש מספיק</li>
+        <li>בורג אלץ: כרטיסים באתר, להגיע מוקדם</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>מה לקחת הביתה</h4>
+      <ul>
+        <li>Kabinett של JJ Prüm או Fritz Haag, מתיישנים נהדר</li>
+        <li>Uhlen של Heymann-Löwenstein לריזלינג יבש רציני</li>
+        <li>מותר להכניס לישראל יין לשימוש אישי, לבדוק מגבלות מכס עדכניות</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+
+<footer>המוזל, גרמניה · תוכנית טיול לשבוע · יין, הליכות, טירות ואוכל</footer>
+
+</div><!-- /page-he -->
+
+<!-- ======================================================= -->
+<!-- ==================== ENGLISH PAGE ===================== -->
+<!-- ======================================================= -->
+<div class="lang-page" id="page-en" dir="ltr" hidden>
+
+<header>
+  <div class="hero-inner">
+    <div class="eyebrow">MOSEL VALLEY · GERMANY · 7 DAYS · APR 29 – MAY 6, 2027</div>
+    <h1>The Mosel: A Week of Slate, Riesling and a Winding River</h1>
+    <p class="hero-sub">A one-week route along the river, from Cochem and its castles in the north to Roman Trier in the south: five of Germany's top wineries, Europe's steepest vineyards, fairytale castles, and a grand finale dinner on the second-to-last evening at a three-Michelin-star restaurant.</p>
+    <div class="hero-stats">
+      <div class="hstat"><b>8</b><span>days</span></div>
+      <div class="hstat"><b>5</b><span>top wineries</span></div>
+      <div class="hstat"><b>★★★</b><span>Michelin dinner on day 6</span></div>
+      <div class="hstat"><b>2</b><span>home bases</span></div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <h2>Day-by-Day Itinerary</h2>
+  <p class="section-lead">Recommended dates: Thursday, Apr 29 to Thursday, May 6, 2027 (8 days). Evening arrival, evening departure on day 8. May is the ideal month for the Mosel: green, blooming, quiet and with comfortable prices. General direction: upstream, from north (Cochem) to south (Trier). This places the Michelin dinner exactly on the second-to-last evening, right next to your home base, with no long drives afterwards. Direct El Al flights round trip to Frankfurt (details under Practical Details). A rental car is essential. Lodging: 3 nights in Cochem, 4 nights in Bernkastel-Kues.</p>
+
+  <div class="days">
+
+    <div class="day">
+      <div class="day-card">
+        <div class="day-label">DAY 1 · THU, APR 29, 2027</div>
+        <h3>Arrival and Drive to Cochem</h3>
+        <div class="route">LY355: TLV 15:00 → FRA 18:35 → Cochem (overnight: Cochem)</div>
+        <ul>
+          <li>Land in Frankfurt at 18:35, pick up the car and drive to Cochem (about 1.5 hours). Arrival around 21:00</li>
+          <li>Check in and freshen up, a short evening on the riverside promenade</li>
+          <li class="f">First glass of Riesling with Flammkuchen at a local Weinstube, if still open</li>
+        </ul>
+        <div class="tip"><b>Tip:</b> The flight lands late, so today is just arrival and sleep. All the action starts tomorrow morning.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">DAY 2 · FRI, APR 30, 2027</div>
+        <h3>Burg Eltz and Cochem</h3>
+        <div class="route">Cochem → Burg Eltz → Cochem (overnight: Cochem)</div>
+        <ul>
+          <li>Early morning: drive to <b>Burg Eltz</b> (40 minutes), Germany's most beautiful castle, hidden in a forest. A lovely 40-minute walk from the Ringelsteiner Mühle car park. Arrive at opening time, before the crowds</li>
+          <li>Back to Cochem: <b>Reichsburg Castle</b> above the town, a guided tour and a walk back down through the vineyards</li>
+          <li>Afternoon: the Cochem chairlift to the <b>Pinnerkreuz</b> viewpoint, the most beautiful angle over the town, castle and river together</li>
+          <li class="f">Evening: local Riesling Sekt and dinner at Alte Gutsschänke, a warm, ancient wine cellar in Cochem's alleys</li>
+        </ul>
+        <div class="tip"><b>Tip:</b> A full day in Cochem with no pressure. Two castles, a sunset from the chairlift and a relaxed first evening.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card">
+        <div class="day-label">DAY 3 · SAT, MAY 1, 2027</div>
+        <h3>Beilstein, Winningen and the First Winery</h3>
+        <div class="route">Cochem → Beilstein → Winningen → Cochem (overnight: Cochem)</div>
+        <ul>
+          <li>Midday cruise on the Mosel to Beilstein, the "Pearl of the Mosel", a tiny, perfect baroque village. Coffee and cake, then climb to the Metternich castle ruins</li>
+          <li class="w">Afternoon: tasting at <b>Heymann-Löwenstein</b> in Winningen (20 minutes from Cochem), the king of the Lower Mosel terraces and stony, dry Riesling</li>
+          <li class="f">Evening: back to Cochem, dinner on the promenade</li>
+        </ul>
+        <div class="tip"><b>Local secret:</b> In late August, Winningen hosts Germany's oldest wine festival. In May you won't catch it, but you'll have the village at its greenest, with no crowds and long golden sunsets.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">DAY 4 · SUN, MAY 2, 2027</div>
+        <h3>The Calmont and Traben-Trarbach: The Challenge Day</h3>
+        <div class="route">Cochem → Bremm → Traben-Trarbach → Bernkastel-Kues (overnight: Bernkastel-Kues)</div>
+        <ul>
+          <li><b>Calmont Klettersteig</b>: the trail through Europe's steepest vineyard above Bremm, with ladders and cables. About 3 hours, with breathtaking views over the river's horseshoe bend</li>
+          <li>Easier version: drive up to the Calmont-Gipfelkreuz viewpoint or take the panorama trail from Bremm</li>
+          <li>On the way: stop at the <b>Marienburg</b> viewpoint above Pünderich, the spot where the river appears on both sides of one ridge</li>
+          <li>Afternoon in Traben-Trarbach: Art Nouveau architecture and a tour of the town's underground wine cellars</li>
+          <li class="f">Evening: arrive in Bernkastel-Kues, check in for four nights and dinner in the old town</li>
+        </ul>
+        <div class="tip"><b>Gear:</b> The Klettersteig requires good hiking shoes, water and a solid head for heights. Do not attempt it in the rain.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">DAY 5 · MON, MAY 3, 2027</div>
+        <h3>Bernkastel-Kues, Wine Capital of the Mosel</h3>
+        <div class="route">A day on foot in Bernkastel-Kues (overnight: Bernkastel-Kues)</div>
+        <ul>
+          <li>The old town: the market square, painted half-timbered houses and the crooked Spitzhäuschen</li>
+          <li>Walk up to the Landshut castle ruins through the <b>Bernkasteler Doctor</b> vineyard, Germany's most expensive and famous vineyard</li>
+          <li class="w">Midday: the <b>Vinothek in the cellars of the St. Nikolaus-Hospital</b> in Kues, a vaulted stone cellar with about 150 Mosel wines to taste freely</li>
+          <li class="w">Afternoon: tasting at <b>Dr. Loosen</b>, at a beautiful estate on the riverbank</li>
+          <li class="f">Evening: Doctor Weinstube or Rotisserie Royale in the old town's alleys</li>
+        </ul>
+        <div class="tip"><b>Tip:</b> A completely car-free day. Everything is walkable, so feel free to go all in on the tastings.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card wine">
+        <div class="day-label">DAY 6 · TUE, MAY 4, 2027</div>
+        <h3>Wehlen and Zeltingen: The Big Winery Day</h3>
+        <div class="route">Bernkastel → Wehlen → Zeltingen (overnight: Bernkastel-Kues)</div>
+        <ul>
+          <li class="w">Morning: <b>Joh. Jos. Prüm</b> in Wehlen, a true cult winery. Visits by personal appointment only, and worth every effort</li>
+          <li>Walk the vineyard trail from Wehlen to Zeltingen along the Wehlener Sonnenuhr, the famous sundial among the vines (about 4 km), with a market picnic beside one of the vintners' huts in the vineyards</li>
+          <li>Extension for the energetic: continue toward Ürzig to see the <b>Ürziger Würzgarten</b>, the "spice garden", a rare red-slate vineyard that yields spicy, exotic Riesling</li>
+          <li class="w">Afternoon: <b>Markus Molitor</b>, one of Germany's most impressive wineries, with dozens of single-vineyard wines</li>
+          <li class="f">Evening: a light country dinner at a Gasthaus in Zeltingen, saving room for tomorrow</li>
+        </ul>
+        <div class="tip"><b>Tip:</b> If JJ Prüm isn't available, an excellent alternative in the same village is S.A. Prüm, with a proper visitor center and tastings without complicated booking.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card food">
+        <div class="day-label">DAY 7 · WED, MAY 5, 2027 · THE BIG NIGHT</div>
+        <h3>Piesport, the Last Winery and the Michelin Dinner</h3>
+        <div class="route">Bernkastel → Neumagen-Dhron → Brauneberg → Piesport → Bernkastel (overnight: Bernkastel-Kues or the schanz hotel)</div>
+        <ul>
+          <li>Relaxed morning: a scenic drive to Neumagen-Dhron, "Germany's oldest wine village". The special experience: a short sail on the <b>Stella Noviomagi</b>, a reconstructed Roman wine ship, glass of Riesling in hand (seasonal, book ahead)</li>
+          <li class="w">Midday: tasting at <b>Fritz Haag</b> in Brauneberg, masters of the Juffer Sonnenuhr (by appointment)</li>
+          <li>Afternoon: viewpoint over the <b>Piesporter Goldtröpfchen</b>, the famous amphitheater of vines, and a rest before the evening</li>
+          <li class="f">Evening: <b>schanz.restaurant</b> in Piesport, three Michelin stars. The trip's grand finale, just 15 minutes from Bernkastel</li>
+        </ul>
+        <div class="tip"><b>Very important:</b> schanz is closed Sunday through Tuesday (confirmed). Our Michelin evening falls on Wednesday (May 5), the first day they open each week — perfect. Reserve two to three months ahead. The most convenient option: sleep at the restaurant's own small hotel and skip driving after wine entirely.</div>
+      </div>
+    </div>
+
+    <div class="day">
+      <div class="day-card">
+        <div class="day-label">DAY 8 · THU, MAY 6, 2027</div>
+        <h3>Roman Trier and Departure</h3>
+        <div class="route">Bernkastel → Trier → Frankfurt (LY356: FRA 19:45 → TLV 00:50)</div>
+        <ul>
+          <li>Check out and drive to Trier, Germany's oldest city (about 50 minutes). A Wednesday — everything is open and crowd-free</li>
+          <li><b>Porta Nigra</b>, the cathedral, the market square and the Roman amphitheater (UNESCO World Heritage sites)</li>
+          <li class="f">One last lunch at a Weinstube facing the cathedral</li>
+          <li>Drive back to Frankfurt (about 2.5 hours), return the car and catch the direct El Al evening flight home</li>
+        </ul>
+        <div class="tip"><b>Why return via Frankfurt:</b> There are no direct flights from Luxembourg to Tel Aviv, and El Al flies direct only from Frankfurt. Returning the car in the same country also saves a 100-200 euro drop-off fee. Leave Trier by 2:00 PM for an evening flight. Wednesday advantage: Trier is much quieter than on a weekend.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Trip Map</h2>
+  <p class="section-lead">All stops are numbered in visiting order, from landing in Frankfurt (1) to the return flight from Frankfurt (16). Click any point to see what you'll do there and on which day.</p>
+  <div class="map-slot"></div>
+  <div class="map-legend">
+    <span>🍇 Wineries</span>
+    <span>🍽️ The Michelin dinner</span>
+    <span>🛏️ Home bases</span>
+    <span>🏰 🥾 ⛴️ 🌄 Sights & viewpoints</span>
+    <span>✈️ 🏁 Frankfurt: arrival (1) and return flight (16), direct El Al</span>
+  </div>
+</section>
+
+<section>
+  <h2>The Five Wineries</h2>
+  <p class="section-lead">All require booking ahead by email (in English, they reply quickly). A typical tasting: 6 to 10 wines, 15 to 30 euros per person, usually credited against purchases.</p>
+  <div class="wineries">
+    <div class="winery">
+      <div class="num">01</div>
+      <h3>Heymann-Löwenstein</h3>
+      <div class="loc">Winningen · Lower Mosel (Terrassenmosel) · Day 2</div>
+      <p>Pioneers of dry Riesling from the steep terraces of the Lower Mosel. Mineral, deep, stony wines from the Uhlen and Röttgen vineyards. A perfect opening to the trip, in a style completely different from the Middle Mosel.</p>
+      <span class="badge">Dry terrace Riesling</span>
+      <div class="wcontact"><span>📧 <a href="mailto:info@heymann-loewenstein.com">info@heymann-loewenstein.com</a></span><span>📞 +49 2606 1919</span><span>🌐 <a href="https://www.heymann-loewenstein.com" target="_blank">heymann-loewenstein.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>Tasting:</b> Guided cellar tour + 6 terroir wines: Schieferterrassen, Von Blauem Schiefer, Kirchberg, Stolzenberg, Röttgen and Uhlen</span><span>💶 <b>Price:</b> €40 per person (€200 for the group)</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">02</div>
+      <h3>Dr. Loosen</h3>
+      <div class="loc">Bernkastel-Kues · Day 4</div>
+      <p>Ernie Loosen turned the 200-year-old family winery into the global ambassador of Mosel Riesling. A beautiful estate on the riverbank with well-organized tastings for visitors.</p>
+      <span class="badge">Most visitor-friendly</span>
+      <div class="wcontact"><span>📧 <a href="mailto:booking@drloosen.de">booking@drloosen.de</a></span><span>📞 +49 6531 3426</span><span>🌐 <a href="https://www.drloosen.com" target="_blank">drloosen.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>Tasting:</b> 5 wines of your choice (€20) or 7 selected wines (€30). Vineyards include Wehlener Sonnenuhr, Ürziger Würzgarten, Erdener Prälat and more</span><span>💶 <b>Price:</b> €20 / €30 per person (€100-150 for the group). Wine tasting only, no cellar or vineyard tours</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">03</div>
+      <h3>Joh. Jos. Prüm</h3>
+      <div class="loc">Wehlen · Day 5</div>
+      <p>Perhaps the most revered winery in Germany. Rieslings from the Wehlener Sonnenuhr that can age for decades. A visit here is an almost religious experience for Riesling lovers.</p>
+      <span class="badge">Legendary Kabinett & Spätlese</span>
+      <div class="wcontact"><span>📧 <a href="mailto:jjpruem@t-online.de">jjpruem@t-online.de</a></span><span>📞 +49 6531 3091</span><span>🌐 <a href="https://www.jjpruem.com" target="_blank">jjpruem.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>Tasting:</b> Personal tasting of 6-8 wines from Wehlener Sonnenuhr and Graacher Himmelreich across Kabinett, Spätlese and Auslese levels. Fee credited against purchases</span><span>💶 <b>Price:</b> ~€15-25 per person (varies, arranged personally)</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">04</div>
+      <h3>Markus Molitor</h3>
+      <div class="loc">Wehlen · Day 5</div>
+      <p>An empire of precision: dozens of single-vineyard wines in three sweetness levels (white, green and gold capsules). Several of his wines have received 100 Parker points.</p>
+      <span class="badge">Excellent Pinot Noir too</span>
+      <div class="wcontact"><span>📧 <a href="mailto:info@markusmolitor.com">info@markusmolitor.com</a></span><span>📞 +49 6532 954000</span><span>🌐 <a href="https://www.markusmolitor.com" target="_blank">markusmolitor.com</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>Tasting:</b> Personal selection from 40+ wines at the Klosterberg vinotheque: single-vineyard Rieslings in white (dry), green (off-dry) and gold (sweet) capsules. Also Pinot Noir and Pinot Blanc</span><span>💶 <b>Price:</b> ~€20 per person (€100 for the group)</span></div>
+    </div>
+    <div class="winery">
+      <div class="num">05</div>
+      <h3>Fritz Haag</h3>
+      <div class="loc">Brauneberg · Day 6</div>
+      <p>One of the Mosel's veteran families, masters of the Brauneberger Juffer Sonnenuhr vineyard. A polished, elegant and precise style, considered one of Germany's most consistent wineries. A perfect finish before the Michelin evening.</p>
+      <span class="badge">Pure elegance</span>
+      <div class="wcontact"><span>📧 <a href="mailto:info@weingut-fritz-haag.de">info@weingut-fritz-haag.de</a></span><span>📞 +49 6534 410</span><span>🌐 <a href="https://www.weingut-fritz-haag.de" target="_blank">weingut-fritz-haag.de</a></span></div>
+      <div class="wcontact" style="border-top:1px solid rgba(201,162,39,.25);margin-top:10px;padding-top:10px;color:#d4d9dc"><span>🍷 <b>Tasting:</b> 6-8 Rieslings from Brauneberger Juffer and Juffer Sonnenuhr, from dry through Auslese. Tasting room with a direct view of the vineyard</span><span>💶 <b>Price:</b> ~€15-25 per person (varies, credited against purchases)</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The Grand Dinner · Day 6</h2>
+  <div class="michelin">
+    <div class="stars">★ ★ ★</div>
+    <h3>schanz. restaurant</h3>
+    <div class="loc">Piesport · Three Michelin stars · Chef Thomas Schanz · The second-to-last evening</div>
+    <p>A local son who trained under Germany's greatest chefs (Harald Wohlfahrt, Klaus Erfort) and returned to the small family business in Piesport, in the heart of the Goldtröpfchen vineyard. Astonishingly precise modern French cuisine, an exceptional Mosel wine list, and surprisingly fair prices for this level. Full tasting menu: around 250 to 300 euros per person before wine. The location is perfect for the route: fifteen minutes from your Bernkastel base, and you can also stay at the restaurant's own hotel.</p>
+    <div class="alt"><b>Alternatives if fully booked:</b> Waldhotel Sonnora in Dreis (three stars, about 25 minutes from Bernkastel), or Rüssel's Landhaus near Trittenheim (one star, delightful country atmosphere).</div>
+  </div>
+</section>
+
+<section>
+  <h2>Food and Wine Along the Way</h2>
+  <p class="section-lead">Beyond the Michelin evening, the Mosel is a paradise of simple, excellent country food that pairs perfectly with Riesling.</p>
+  <div class="food-grid">
+    <div class="food-card">
+      <h4>Flammkuchen</h4>
+      <div class="where">At every Weinstube</div>
+      <p>A paper-thin "pizza" with cream, onion and bacon. The national dish of the wine regions, wonderful with dry Riesling.</p>
+    </div>
+    <div class="food-card">
+      <h4>Winzerteller (Vintner's Plate)</h4>
+      <div class="where">Wine cellars</div>
+      <p>A board of cheeses, cured meats, country bread and pickles. The classic companion to tastings.</p>
+    </div>
+    <div class="food-card">
+      <h4>Riesling Crème Brûlée and Plums</h4>
+      <div class="where">Bernkastel and Cochem</div>
+      <p>Wine-based desserts and seasonal plum cake (Zwetschgenkuchen). With an afternoon coffee.</p>
+    </div>
+    <div class="food-card">
+      <h4>Federweisser</h4>
+      <div class="where">If you visit in autumn</div>
+      <p>Fizzy, half-fermented young wine sold only during harvest season, served with onion tart. A true local seasonal experience.</p>
+    </div>
+    <div class="food-card">
+      <h4>Trier's Market and Delis</h4>
+      <div class="where">Hauptmarkt, Trier</div>
+      <p>A daily market with cheese, bread and fruit stalls. Perfect for the last day's lunch.</p>
+    </div>
+    <div class="food-card">
+      <h4>Red Vineyard Peach (Weinbergpfirsich)</h4>
+      <div class="where">Throughout the region</div>
+      <p>A wild red peach that grows only among the Mosel vineyards. Its liqueur, jam and desserts are the most local culinary souvenir there is. The liqueur with Sekt is a must.</p>
+    </div>
+    <div class="food-card">
+      <h4>Local Sekt</h4>
+      <div class="where">Cochem and Winningen</div>
+      <p>German sparkling wine made from Riesling by the traditional method. Small producers along the river make excellent versions at wonderful prices.</p>
+    </div>
+  </div>
+</section>
+
+
+<section>
+  <h2>The Trip in (Amusing) Numbers</h2>
+  <p class="section-lead">A few figures to get you excited, and to supply conversation material with the first glass of Riesling.</p>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="big">~650</div><div class="unit">km of driving</div><p>For the entire week. With 16 stops, 5 wineries and zero traffic jams along the way.</p></div>
+    <div class="stat-card"><div class="big">65°</div><div class="unit">Calmont's slope</div><p>Europe's steepest vineyard. For comparison, a mall escalator runs at 30 degrees. The vintners there work with harnesses.</p></div>
+    <div class="stat-card"><div class="big">~50</div><div class="unit">wines tasted</div><p>Five wineries plus the Vinothek with 150 open bottles. At a reasonable pace you'll taste more wines in a week than most people do in a year.</p></div>
+    <div class="stat-card"><div class="big">2,000+</div><div class="unit">years of wine</div><p>The Romans planted vines here in the first century AD. You'll be drinking the upgraded version of what the legionnaires drank.</p></div>
+    <div class="stat-card"><div class="big">×2.7</div><div class="unit">crooked river</div><p>The Mosel meanders so much it covers 243 km in Germany over a straight-line distance of about 90 km. You will always arrive before it does.</p></div>
+    <div class="stat-card"><div class="big">~800</div><div class="unit">meters of climbing</div><p>Calmont, Landshut castle, Reichsburg and Burg Eltz combined. Roughly two and a half Empire State Buildings, with wine at the end.</p></div>
+    <div class="stat-card"><div class="big">3:2,000</div><div class="unit">stars per residents</div><p>Tiny Piesport holds 3 Michelin stars for about 2,000 residents. A stars-per-capita ratio that embarrasses Paris.</p></div>
+    <div class="stat-card"><div class="big">100+</div><div class="unit">year-old vines</div><p>The steep slate slopes still hold century-old ungrafted vines, among Europe's oldest. Phylloxera doesn't like slate.</p></div>
+  </div>
+</section>
+
+
+
+<section>
+  <h2>Practical Details</h2>
+  <div class="practical">
+    <div class="pcard" style="border-inline-start-color:#c9a227">
+      <h4>✈️ Recommended Flights</h4>
+      <ul>
+        <li><b>Outbound:</b> El Al direct TLV → FRA, Saturday morning, May 8, 2027 (about 4.5 hours, arriving midday with time for Burg Eltz)</li>
+        <li><b>Return:</b> El Al direct FRA → TLV, Friday evening, May 14, 2027</li>
+        <li><b>Expected price:</b> roughly 400 to 550 USD per person round trip in May. Book as soon as tickets open (expected July-August 2026) and set a price alert on Google Flights and the El Al site</li>
+        <li><b>Alternatives if prices are high:</b> Lufthansa (direct, often slightly cheaper) or Aegean via Athens (cheapest, with a stop)</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>Getting There and Around</h4>
+      <ul>
+        <li>Land in and depart from Frankfurt, picking up and returning the car at the same place</li>
+        <li>A rental car is essential; the riverside roads are easy and beautiful</li>
+        <li>On tasting days: appoint a designated driver or use local taxis</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>Best Season</h4>
+      <ul>
+        <li>May-June: green, blooming and calm</li>
+        <li>September-October: harvest, wine festivals and Federweisser, the most festive time (and the busiest)</li>
+        <li>Two festivals worth aiming for: the Winningen wine festival (late August, Germany's oldest) and Bernkastel's great wine festival (early September, with fireworks over the river)</li>
+        <li>Avoid November-March, when many wineries and restaurants are closed</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>Recommended Lodging</h4>
+      <ul>
+        <li>Cochem (3 nights): a room with a river-view balcony, or Beilstein for total quiet</li>
+        <li>Bernkastel-Kues (4 nights): a boutique hotel or guesthouse among the half-timbered houses</li>
+        <li>Option for the Michelin night: stay at the schanz hotel in Piesport instead of the fourth night in Bernkastel</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>Estimated Budget for Two</h4>
+      <ul>
+        <li>Lodging, 7 nights: 900 to 1,400 euros</li>
+        <li>The Michelin dinner: 600 to 800 euros including wine</li>
+        <li>Winery tastings: 150 to 250 euros</li>
+        <li>Food, car and attractions: 900 to 1,200 euros</li>
+        <li><b>Total: about 2,600 to 3,600 euros (excluding flights and wine to take home)</b></li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>Must-Book-Ahead List</h4>
+      <ul>
+        <li>schanz.restaurant for day 6: book 2-3 months ahead and build the order of days around their opening days</li>
+        <li>JJ Prüm: a personal email, with flexibility on dates</li>
+        <li>The other wineries: one to two weeks ahead is enough</li>
+        <li>Burg Eltz: tickets online, arrive early</li>
+      </ul>
+    </div>
+    <div class="pcard">
+      <h4>What to Take Home</h4>
+      <ul>
+        <li>A Kabinett from JJ Prüm or Fritz Haag, they age beautifully</li>
+        <li>Heymann-Löwenstein's Uhlen for serious dry Riesling</li>
+        <li>Wine for personal use may be brought into Israel; check current customs limits</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+
+<footer>Mosel, Germany · A one-week trip plan · Wine, hikes, castles and food</footer>
+
+</div><!-- /page-en -->
+
+
+
+<button class="tracker-fab" id="trackerFabHe" style="display:none">📋 מעקב הזמנות</button>
+<div class="tracker-overlay" id="trackerOverlayHe">
+<div class="tracker-modal" dir="rtl">
+  <button class="tracker-modal-close" onclick="document.getElementById('trackerOverlayHe').classList.remove('open')">✕</button>
+  <h2>📋 מעקב הזמנות · טיול המוזל</h2>
+
+  <div class="tsep">✈️ טיסות</div>
+  <div class="titem confirmed">
+    <h4>אל על LY355 + LY356</h4>
+    <div class="tstatus green">✅ מאושר</div>
+    <p>הלוך: חמישי 29.4 · TLV 15:00 → FRA 18:35<br>חזור: רביעי 6.5 · FRA 19:45 → TLV 00:50+1</p>
+  </div>
+
+  <div class="tsep">🍇 יקבים</div>
+  <div class="titem confirmed">
+    <h4>Dr. Loosen · שני 3.5 · 13:00</h4>
+    <div class="tstatus green">✅ מאושר · אישר רון</div>
+    <p>5 יינות לבחירה. איש קשר: Levan (levan.chanchaleishvili@drloosen.de). אישור נשלח 10.7.2026.</p>
+  </div>
+  <div class="titem confirmed">
+    <h4>Markus Molitor · שלישי 4.5 · 15:00</h4>
+    <div class="tstatus green">✅ מאושר · אישר רון</div>
+    <p>8+ יינות לבחירה. איש קשר: Luisa (vinothek@markusmolitor.com). אישור נשלח 10.7.2026.</p>
+  </div>
+  <div class="titem pending">
+    <h4>Fritz Haag · רביעי 5.5 · צהריים</h4>
+    <div class="tstatus yellow">🕐 ממתין · לשלוח תזכורת תחילת 2027</div>
+    <p>ג'סיקה ענתה שמוקדם מדי לאשר. רון ענה שישלח תזכורת. איש קשר: Jessica (info@weingut-fritz-haag.de).</p>
+    <div class="taction">📅 פעולה: לשלוח תזכורת בינואר-פברואר 2027</div>
+  </div>
+  <div class="titem waiting">
+    <h4>Heymann-Löwenstein · שבת 1.5 · 14:00 או 16:00</h4>
+    <div class="tstatus red">❓ ללא מענה</div>
+    <p>נשלח ל-info@weingut-hl.de ב-8.7.2026, אין תשובה עדיין.</p>
+    <div class="taction">📅 פעולה: לשלוח follow-up אם אין תשובה תוך שבוע. אפשר גם לנסות טלפונית: +49 2606 1919</div>
+  </div>
+  <div class="titem waiting">
+    <h4>Joh. Jos. Prüm · שלישי 4.5 · בוקר</h4>
+    <div class="tstatus red">❓ ללא מענה</div>
+    <p>נשלח ל-info@jjpruem.com ב-8.7.2026, אין תשובה עדיין. ניסיונות קודמים (jjpruem@t-online.de, jjpruem@jjpruem.com) חזרו.</p>
+    <div class="taction">📅 פעולה: לשלוח follow-up. אם אין תשובה, לנסות טלפונית: +49 6531 3091 או דרך VDP website</div>
+  </div>
+
+  <div class="tsep">🍽️ מסעדת schanz</div>
+  <div class="titem action">
+    <h4>schanz.restaurant · רביעי 5.5 · ערב</h4>
+    <div class="tstatus blue">👤 רוברט מטפל</div>
+    <p>3 כוכבי מישלן, פיספורט. רוברט אחראי על ההזמנה. המסעדה סגורה ראשון-שלישי (מאומת), רביעי פתוח.</p>
+    <div class="taction">📅 פעולה: לוודא עם רוברט שהוזמן מקום ל-5 סועדים לרביעי 5.5.2027 בערב</div>
+  </div>
+
+  <div class="tsep">🚗 רכב שכור</div>
+  <div class="titem action">
+    <h4>השכרת רכב · פרנקפורט · 29.4-6.5.2027</h4>
+    <div class="tstatus blue">👤 אבירם מטפל</div>
+    <p>איסוף והחזרה בנמל התעופה פרנקפורט. צריך רכב ל-5 אנשים + מזוודות (SUV או מיניוואן מומלץ). 8 ימים.</p>
+    <div class="taction">📅 פעולה: לוודא עם אבירם שהוזמן רכב. לבדוק: ביטוח מלא, GPS, אפשרות נהג נוסף</div>
+  </div>
+
+  <div class="tsep">🏨 לינה</div>
+  <div class="titem action">
+    <h4>קוכם · 3 לילות (29.4-2.5)</h4>
+    <div class="tstatus yellow">🕐 טרם הוזמן</div>
+    <p>מלון עם חדרים ל-5 אנשים. עדיפות: מרפסת לנהר.</p>
+  </div>
+  <div class="titem action">
+    <h4>ברנקסטל-קוס · 4 לילות (2.5-6.5)</h4>
+    <div class="tstatus yellow">🕐 טרם הוזמן</div>
+    <p>מלון בוטיק או צימר בעיר העתיקה. אופציה: לילה אחד במלון של schanz (5.5).</p>
+  </div>
+
+</div>
+</div>
+
+<button class="tracker-fab" id="trackerFabEn" style="display:none">📋 Booking Tracker</button>
+<div class="tracker-overlay" id="trackerOverlayEn">
+<div class="tracker-modal" dir="ltr">
+  <button class="tracker-modal-close" onclick="document.getElementById('trackerOverlayEn').classList.remove('open')">✕</button>
+  <h2>📋 Booking Tracker · Mosel Trip</h2>
+
+  <div class="tsep">✈️ Flights</div>
+  <div class="titem confirmed">
+    <h4>El Al LY355 + LY356</h4>
+    <div class="tstatus green">✅ Confirmed</div>
+    <p>Outbound: Thu Apr 29 · TLV 15:00 → FRA 18:35<br>Return: Wed May 6 · FRA 19:45 → TLV 00:50+1</p>
+  </div>
+
+  <div class="tsep">🍇 Wineries</div>
+  <div class="titem confirmed">
+    <h4>Dr. Loosen · Mon, May 3 · 1:00 PM</h4>
+    <div class="tstatus green">✅ Confirmed · Ron replied</div>
+    <p>5 wines of your choice. Contact: Levan (levan.chanchaleishvili@drloosen.de). Confirmed Jul 10, 2026.</p>
+  </div>
+  <div class="titem confirmed">
+    <h4>Markus Molitor · Tue, May 4 · 3:00 PM</h4>
+    <div class="tstatus green">✅ Confirmed · Ron replied</div>
+    <p>8+ wines of your choice. Contact: Luisa (vinothek@markusmolitor.com). Confirmed Jul 10, 2026.</p>
+  </div>
+  <div class="titem pending">
+    <h4>Fritz Haag · Wed, May 5 · Midday</h4>
+    <div class="tstatus yellow">🕐 Pending · Send reminder early 2027</div>
+    <p>Jessica replied that it's too early to confirm. Ron acknowledged and will send a reminder. Contact: Jessica (info@weingut-fritz-haag.de).</p>
+    <div class="taction">📅 Action: Send reminder in Jan-Feb 2027</div>
+  </div>
+  <div class="titem waiting">
+    <h4>Heymann-Löwenstein · Sat, May 1 · 2:00 or 4:00 PM</h4>
+    <div class="tstatus red">❓ No response</div>
+    <p>Sent to info@weingut-hl.de on Jul 8, 2026. No reply yet.</p>
+    <div class="taction">📅 Action: Send follow-up if no reply within a week. Also try calling: +49 2606 1919</div>
+  </div>
+  <div class="titem waiting">
+    <h4>Joh. Jos. Prüm · Tue, May 4 · Morning</h4>
+    <div class="tstatus red">❓ No response</div>
+    <p>Sent to info@jjpruem.com on Jul 8, 2026. No reply yet. Earlier attempts (jjpruem@t-online.de, jjpruem@jjpruem.com) bounced.</p>
+    <div class="taction">📅 Action: Send follow-up. If no reply, try calling: +49 6531 3091 or via VDP website</div>
+  </div>
+
+  <div class="tsep">🍽️ schanz.restaurant</div>
+  <div class="titem action">
+    <h4>schanz.restaurant · Wed, May 5 · Evening</h4>
+    <div class="tstatus blue">👤 Robert is handling</div>
+    <p>3 Michelin stars, Piesport. Robert is responsible for the reservation. Restaurant closed Sun-Tue (confirmed), Wednesday is open.</p>
+    <div class="taction">📅 Action: Confirm with Robert that a table for 5 is booked for Wed, May 5, 2027 evening</div>
+  </div>
+
+  <div class="tsep">🚗 Rental Car</div>
+  <div class="titem action">
+    <h4>Car Rental · Frankfurt · Apr 29 – May 6, 2027</h4>
+    <div class="tstatus blue">👤 Aviram is handling</div>
+    <p>Pick up and return at Frankfurt Airport. Need a car for 5 people + luggage (SUV or minivan recommended). 8 days.</p>
+    <div class="taction">📅 Action: Confirm with Aviram that the car is booked. Check: full insurance, GPS, additional driver option</div>
+  </div>
+
+  <div class="tsep">🏨 Accommodation</div>
+  <div class="titem action">
+    <h4>Cochem · 3 nights (Apr 29 – May 2)</h4>
+    <div class="tstatus yellow">🕐 Not yet booked</div>
+    <p>Hotel with rooms for 5 people. Preference: river-view balcony.</p>
+  </div>
+  <div class="titem action">
+    <h4>Bernkastel-Kues · 4 nights (May 2 – 6)</h4>
+    <div class="tstatus yellow">🕐 Not yet booked</div>
+    <p>Boutique hotel or guesthouse in the old town. Option: one night at the schanz hotel (May 5).</p>
+  </div>
+
+</div>
+</div>
+
+<!-- QUIZ FAB + MODALS -->
+<button class="quiz-fab" id="quizFabHe" data-lang="he" style="display:none">🧠 חידון המוזל</button>
+<div class="quiz-overlay" id="quizOverlayHe"><div class="quiz-modal" dir="rtl">
+  <button class="quiz-modal-close" onclick="document.getElementById('quizOverlayHe').classList.remove('open')">✕</button>
+    <h2>חידון המוזל · 10 שאלות לפני הנסיעה</h2>
+  <p class="section-lead">בדקו כמה אתם כבר מכירים את האזור. כל תשובה פותחת הסבר קצר, כך שגם טעות שווה משהו.</p>
+  <div class="quiz" data-quiz="he">
+    <div class="quiz-q"><h4><span class="qnum">1</span>מה הפך את המוזל לאזור ריזלינג כל כך מיוחד?</h4>
+      <div class="qopts">
+        <button class="qopt">אקלים טרופי חריג</button>
+        <button class="qopt" data-c="1">קרקע צפחה שאוגרת חום ומדרונות תלולים לשמש</button>
+        <button class="qopt">השקיה ממי הנהר</button>
+        <button class="qopt">חוק גרמני שאוסר לגדל שם ענבים אחרים</button>
+      </div>
+      <div class="qexp">הצפחה (Schiefer) סופגת חום ביום ומחזירה אותו לגפנים בלילה, והמדרונות התלולים תופסים כל קרן שמש באקלים צפוני. זה מה שמאפשר לריזלינג להבשיל כל כך צפונית.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">2</span>איזו עיר נחשבת לעתיקה ביותר בגרמניה?</h4>
+      <div class="qopts">
+        <button class="qopt">קלן</button>
+        <button class="qopt">ברלין</button>
+        <button class="qopt" data-c="1">טרייר</button>
+        <button class="qopt">מיינץ</button>
+      </div>
+      <div class="qexp">טרייר נוסדה על ידי הרומאים בסביבות שנת 16 לפנה"ס בשם Augusta Treverorum, והייתה בירת האימפריה הרומית המערבית לתקופה. פורטה ניגרה הוא שער העיר הרומי השמור בעולם מצפון לאלפים.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">3</span>על פי האגדה, מה עשה היין מכרם ה-Bernkasteler Doctor במאה ה-14?</h4>
+      <div class="qopts">
+        <button class="qopt" data-c="1">ריפא ארכיבישוף חולה</button>
+        <button class="qopt">שימש כתחליף למים בזמן מגפה</button>
+        <button class="qopt">הוגש בחתונת קיסר</button>
+        <button class="qopt">שולם כמס לוותיקן</button>
+      </div>
+      <div class="qexp">האגדה מספרת שהארכיבישוף בומונד השני מטרייר החלים ממחלה קשה אחרי ששתה מהיין, והעניק לכרם את השם "דוקטור". היום זה מהכרמים היקרים בגרמניה.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">4</span>מה זה בעצם "Sonnenuhr" שמופיע בשמות הכרמים המפורסמים (Wehlener Sonnenuhr, Juffer Sonnenuhr)?</h4>
+      <div class="qopts">
+        <button class="qopt">שם משפחה של כורמים</button>
+        <button class="qopt">זן ענבים עתיק</button>
+        <button class="qopt" data-c="1">שעון שמש אמיתי שנבנה בתוך הכרם</button>
+        <button class="qopt">כינוי לחלקה הכי חמה</button>
+      </div>
+      <div class="qexp">אלה שעוני שמש אמיתיים שנבנו במאה ה-19 בין הגפנים כדי שהפועלים בכרמים ידעו מה השעה. שעון השמש של ולן משנת 1842 עדיין עומד, ותראו אותו בהליכת הכרמים ביום 5.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">5</span>מה מיוחד בקרקע של כרם ה-Ürziger Würzgarten ("גן התבלינים")?</h4>
+      <div class="qopts">
+        <button class="qopt">היא מכילה חול ים עתיק</button>
+        <button class="qopt" data-c="1">צפחה אדומה וולקנית נדירה</button>
+        <button class="qopt">היא מיובאת מצרפת</button>
+        <button class="qopt">היא מוחלפת כל עשור</button>
+      </div>
+      <div class="qexp">בניגוד לצפחה הכחולה-אפורה של רוב המוזל, באורציג הקרקע אדומה, עם מרכיב וולקני עתיק. התוצאה: ריזלינג "מתובל", אקזוטי ושונה מכל שכניו.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">6</span>איפה מתקיים פסטיבל היין העתיק ביותר בגרמניה?</h4>
+      <div class="qopts">
+        <button class="qopt">מינכן</button>
+        <button class="qopt">ברנקסטל-קוס</button>
+        <button class="qopt" data-c="1">וינינגן</button>
+        <button class="qopt">היידלברג</button>
+      </div>
+      <div class="qexp">פסטיבל היין של וינינגן נחגג מאז המאה ה-16 בסוף אוגוסט, יום 2 של המסלול עובר שם, אם כי במאי הפסטיבל לא מתקיים.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">7</span>מה ההבדל בין הכמוסות הלבנות, הירוקות והזהובות של Markus Molitor?</h4>
+      <div class="qopts">
+        <button class="qopt">איכות הבציר</button>
+        <button class="qopt" data-c="1">רמת המתיקות של היין</button>
+        <button class="qopt">גיל הגפנים</button>
+        <button class="qopt">סוג החבית</button>
+      </div>
+      <div class="qexp">לבן = יבש, ירוק = חצי יבש, זהוב = עם מתיקות. שיטת סימון גאונית בפשטותה שתעזור לכם מאוד בטעימה ביום 5, כשמולכם עשרות יינות חד-כרמיים.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">8</span>מהו Federweisser שנמכר באזור בעונת הבציר?</h4>
+      <div class="qopts">
+        <button class="qopt">ליקר מאפרסק הכרמים</button>
+        <button class="qopt">ברנדי מזוקק מריזלינג</button>
+        <button class="qopt" data-c="1">יין צעיר תוסס שעדיין באמצע התסיסה</button>
+        <button class="qopt">מיץ ענבים לילדים</button>
+      </div>
+      <div class="qexp">Federweisser הוא יין בשלבי תסיסה, עכור, מתקתק ומעט מוגז, שנמכר ימים ספורים אחרי הבציר. מגישים אותו עם עוגת בצל, הטיול שלנו במאי הוא לפני עונת הבציר, אז את הפדרוויסר תשמרו לביקור הבא בסתיו.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">9</span>למה דווקא הריזלינגים המתוקים-למחצה של המוזל (Kabinett, Spätlese) מסוגלים להתיישן עשרות שנים?</h4>
+      <div class="qopts">
+        <button class="qopt">בגלל אחוזי האלכוהול הגבוהים</button>
+        <button class="qopt" data-c="1">בזכות החומציות הגבוהה שמשמרת את היין</button>
+        <button class="qopt">כי הם מאוחסנים במרתפי צפחה</button>
+        <button class="qopt">בגלל פקקי זכוכית מיוחדים</button>
+      </div>
+      <div class="qexp">דווקא ההפך מאלכוהול: יינות המוזל קלים (לעיתים 8% בלבד), אבל החומציות החדה שלהם פועלת כחומר משמר טבעי. Kabinett טוב של JJ Prüm יכול להיפתח בשיא גם אחרי 30 שנה.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">10</span>מה עשה תומאס שאנץ, השף של מסעדת שלושת הכוכבים בפיספורט, לפני שפתח אותה?</h4>
+      <div class="qopts">
+        <button class="qopt">היה כורם ביקב משפחתי</button>
+        <button class="qopt" data-c="1">התמחה אצל גדולי השפים של גרמניה וחזר לעסק המשפחתי</button>
+        <button class="qopt">היה שף בקו התעופה לופטהנזה</button>
+        <button class="qopt">ניהל מסעדה בפריז</button>
+      </div>
+      <div class="qexp">שאנץ הוא בן פיספורט שהתמחה אצל הראלד וולפארט וקלאוס ארפורט, מגדולי המטבח הגרמני, וחזר הביתה להפוך את הגסטהאוס המשפחתי הקטן למסעדת שלושה כוכבים. שם תאכלו בערב יום 6.</div>
+    </div>
+    <div class="quiz-score"></div>
+  </div>
+
+</div></div>
+
+<button class="quiz-fab" id="quizFabEn" data-lang="en" style="display:none">🧠 Mosel Quiz</button>
+<div class="quiz-overlay" id="quizOverlayEn"><div class="quiz-modal" dir="ltr">
+  <button class="quiz-modal-close" onclick="document.getElementById('quizOverlayEn').classList.remove('open')">✕</button>
+    <h2>The Mosel Quiz · 10 Questions Before You Go</h2>
+  <p class="section-lead">See how well you already know the region. Every answer reveals a short explanation, so even a mistake teaches you something.</p>
+  <div class="quiz" data-quiz="en">
+    <div class="quiz-q"><h4><span class="qnum">1</span>What makes the Mosel such an exceptional Riesling region?</h4>
+      <div class="qopts">
+        <button class="qopt">An unusual tropical microclimate</button>
+        <button class="qopt" data-c="1">Heat-storing slate soil and steep, sun-catching slopes</button>
+        <button class="qopt">Irrigation from the river</button>
+        <button class="qopt">A German law banning other grape varieties</button>
+      </div>
+      <div class="qexp">The slate (Schiefer) absorbs heat by day and radiates it back to the vines at night, while the steep slopes catch every ray of sun in a northern climate. That's what lets Riesling ripen this far north.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">2</span>Which city is considered Germany's oldest?</h4>
+      <div class="qopts">
+        <button class="qopt">Cologne</button>
+        <button class="qopt">Berlin</button>
+        <button class="qopt" data-c="1">Trier</button>
+        <button class="qopt">Mainz</button>
+      </div>
+      <div class="qexp">Trier was founded by the Romans around 16 BC as Augusta Treverorum and was for a time the capital of the Western Roman Empire. The Porta Nigra is the best-preserved Roman city gate north of the Alps.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">3</span>According to legend, what did wine from the Bernkasteler Doctor vineyard do in the 14th century?</h4>
+      <div class="qopts">
+        <button class="qopt" data-c="1">Cured a sick archbishop</button>
+        <button class="qopt">Replaced water during a plague</button>
+        <button class="qopt">Was served at an emperor's wedding</button>
+        <button class="qopt">Was paid as tax to the Vatican</button>
+      </div>
+      <div class="qexp">Legend says Archbishop Boemund II of Trier recovered from a grave illness after drinking the wine, giving the vineyard its name, "Doctor". Today it's among Germany's most expensive vineyards.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">4</span>What is a "Sonnenuhr", the word in famous vineyard names like Wehlener Sonnenuhr and Juffer Sonnenuhr?</h4>
+      <div class="qopts">
+        <button class="qopt">A vintner family name</button>
+        <button class="qopt">An ancient grape variety</button>
+        <button class="qopt" data-c="1">An actual sundial built into the vineyard</button>
+        <button class="qopt">A nickname for the warmest parcel</button>
+      </div>
+      <div class="qexp">These are real sundials built in the 19th century among the vines so vineyard workers would know the time. The Wehlen sundial from 1842 still stands, and you'll see it on the day 5 vineyard walk.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">5</span>What is special about the soil of the Ürziger Würzgarten ("spice garden")?</h4>
+      <div class="qopts">
+        <button class="qopt">It contains ancient sea sand</button>
+        <button class="qopt" data-c="1">Rare red volcanic slate</button>
+        <button class="qopt">It is imported from France</button>
+        <button class="qopt">It is replaced every decade</button>
+      </div>
+      <div class="qexp">Unlike the blue-grey slate of most of the Mosel, Ürzig's soil is red, with an ancient volcanic component. The result: "spicy", exotic Riesling unlike any of its neighbors.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">6</span>Where is Germany's oldest wine festival held?</h4>
+      <div class="qopts">
+        <button class="qopt">Munich</button>
+        <button class="qopt">Bernkastel-Kues</button>
+        <button class="qopt" data-c="1">Winningen</button>
+        <button class="qopt">Heidelberg</button>
+      </div>
+      <div class="qexp">The Winningen wine festival has been celebrated since the 16th century in late August, Day 2 of the route passes right through it, though in May the festival isn't on.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">7</span>What do Markus Molitor's white, green and gold capsules indicate?</h4>
+      <div class="qopts">
+        <button class="qopt">The vintage quality</button>
+        <button class="qopt" data-c="1">The wine's sweetness level</button>
+        <button class="qopt">The age of the vines</button>
+        <button class="qopt">The type of barrel</button>
+      </div>
+      <div class="qexp">White = dry, green = off-dry, gold = with sweetness. A brilliantly simple system that will help you a lot at the day 5 tasting, facing dozens of single-vineyard wines.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">8</span>What is the Federweisser sold in the region during harvest season?</h4>
+      <div class="qopts">
+        <button class="qopt">A vineyard-peach liqueur</button>
+        <button class="qopt">A brandy distilled from Riesling</button>
+        <button class="qopt" data-c="1">Young, fizzy wine still mid-fermentation</button>
+        <button class="qopt">Grape juice for children</button>
+      </div>
+      <div class="qexp">Federweisser is wine caught mid-fermentation: cloudy, sweetish and slightly fizzy, sold just days after the harvest. It's served with onion tart, our May trip is before harvest, so Federweisser will have to wait for an autumn return.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">9</span>Why can the Mosel's off-dry Rieslings (Kabinett, Spätlese) age for decades?</h4>
+      <div class="qopts">
+        <button class="qopt">Because of their high alcohol content</button>
+        <button class="qopt" data-c="1">Thanks to high acidity that preserves the wine</button>
+        <button class="qopt">Because they are stored in slate cellars</button>
+        <button class="qopt">Because of special glass stoppers</button>
+      </div>
+      <div class="qexp">The opposite of alcohol, in fact: Mosel wines are light (sometimes just 8%), but their razor-sharp acidity acts as a natural preservative. A good JJ Prüm Kabinett can open at its peak even after 30 years.</div>
+    </div>
+    <div class="quiz-q"><h4><span class="qnum">10</span>What did Thomas Schanz, the chef of Piesport's three-star restaurant, do before opening it?</h4>
+      <div class="qopts">
+        <button class="qopt">He was a vintner at a family winery</button>
+        <button class="qopt" data-c="1">Trained under Germany's greatest chefs and returned to the family business</button>
+        <button class="qopt">Was a chef for Lufthansa</button>
+        <button class="qopt">Ran a restaurant in Paris</button>
+      </div>
+      <div class="qexp">Schanz is a Piesport native who trained under Harald Wohlfahrt and Klaus Erfort, giants of German cuisine, then came home to turn the small family Gasthaus into a three-star restaurant. That's where you'll dine on the evening of day 6.</div>
+    </div>
+    <div class="quiz-score"></div>
+  </div>
+
+</div></div>
+
+<!-- Shared map element, moved between language pages -->
+<div class="map-wrap" id="mapWrap" style="display:none">
+  <div id="map"></div>
+  <button id="fsBtn" type="button">⛶</button>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ================= LANGUAGE ================= */
+let lang = 'he';
+const T = {
+  he: {langBtn:'🌐 English', fs:'⛶ מסך מלא', fsClose:'✕ סגירה', popupCls:'popup-rtl'},
+  en: {langBtn:'🌐 עברית',  fs:'⛶ Fullscreen', fsClose:'✕ Close', popupCls:'popup-ltr'}
+};
+
+/* ================= MAP ================= */
+const mapWrap = document.getElementById('mapWrap');
+mapWrap.style.display = '';
+
+const map = L.map('map', {scrollWheelZoom:false, zoomControl:false}).setView([50.02, 7.05], 9);
+L.control.zoom({position:'topright'}).addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors', maxZoom: 18
+}).addTo(map);
+
+const C = {winery:'#c9a227', michelin:'#a3543f', lodging:'#4f7d8c', sight:'#5b7553', airport:'#2b333b'};
+
+function scaleFor(zoom){
+  return Math.max(0.45, Math.min(1.15, 1 - (9 - zoom) * 0.16));
+}
+
+function mkIcon(emoji, type, big, num, zoom){
+  const k = scaleFor(zoom);
+  const s = Math.round((big ? 37 : 34) * k);
+  const badge = Math.max(13, Math.round(17 * k));
+  return L.divIcon({
+    className:'',
+    iconSize:[s,s], iconAnchor:[s/2,s/2], popupAnchor:[0,-s/2],
+    html:`<div style="position:relative;width:${s}px;height:${s}px">
+      <div style="width:${s}px;height:${s}px;border-radius:50%;background:#fff;
+        border:${Math.max(2,Math.round(3*k))}px solid ${C[type]};display:flex;align-items:center;justify-content:center;
+        font-size:${Math.round((big?18:17)*k)}px;box-shadow:0 2px 6px rgba(0,0,0,.35)">${emoji}</div>
+      <div style="position:absolute;top:-${Math.round(badge*0.35)}px;left:-${Math.round(badge*0.35)}px;
+        width:${badge}px;height:${badge}px;border-radius:50%;background:${C[type]};color:#fff;
+        display:flex;align-items:center;justify-content:center;
+        font:700 ${Math.max(9,Math.round(10.5*k))}px Assistant,sans-serif;
+        border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)">${num}</div>
+    </div>`
+  });
+}
+
+const stops = [
+  // lat, lng, type, emoji, big, num, {he:[name,detail], en:[name,detail]}
+  [50.0379, 8.5622, 'airport','✈️', false, 1, {
+    he:['שדה התעופה פרנקפורט (FRA)','יום 1 (29.4) · LY355 נחיתה 18:35 · יום 8 (6.5) · LY356 המראה 19:45'],
+    en:['Frankfurt Airport (FRA)','Day 1 (Apr 29) · LY355 landing 18:35 · Day 8 (May 6) · El Al evening flight home']}],
+  [50.2054, 7.3362, 'sight','🏰', false, 2, {
+    he:['בורג אלץ','יום 1 · הטירה היפה בגרמניה, הליכה ביער אל הטירה'],
+    en:['Burg Eltz','Day 1 · Germany\'s most beautiful castle, a forest walk to the gate']}],
+  [50.1469, 7.1660, 'lodging','🛏️', false, 3, {
+    he:['קוכם · בסיס לינה','לילות 1-3 · טירת רייכסבורג, רכבל ל-Pinnerkreuz וערבים על הטיילת'],
+    en:['Cochem · Home base','Nights 1-3 · Reichsburg Castle, the Pinnerkreuz chairlift and evenings on the promenade']}],
+  [50.1097, 7.2394, 'sight','⛴️', false, 4, {
+    he:['ביילשטיין','יום 2 · "פנינת המוזל", שייט צהריים וקפה בכפר הברוקי'],
+    en:['Beilstein','Day 2 · The "Pearl of the Mosel", a midday cruise and coffee in the baroque village']}],
+  [50.3110, 7.5160, 'winery','🍇', false, 5, {
+    he:['Heymann-Löwenstein · וינינגן','יום 2 · ריזלינג יבש מהטרסות של המוזל התחתון'],
+    en:['Heymann-Löwenstein · Winningen','Day 2 · Dry Riesling from the Lower Mosel terraces']}],
+  [50.0950, 7.1290, 'sight','🥾', false, 6, {
+    he:['קלמונט · ברם','יום 3 · הקלטרשטייג בכרם התלול באירופה ותצפית הפרסה'],
+    en:['Calmont · Bremm','Day 3 · The Klettersteig through Europe\'s steepest vineyard and the horseshoe-bend view']}],
+  [50.0560, 7.1330, 'sight','🌄', false, 7, {
+    he:['תצפית Marienburg','יום 3 · הנקודה שרואים ממנה את הנהר משני צידי הרכס'],
+    en:['Marienburg viewpoint','Day 3 · The spot where the river appears on both sides of one ridge']}],
+  [49.9503, 7.1152, 'sight','🏛️', false, 8, {
+    he:['טראבן-טרארבך','יום 3 · אר-נובו ומרתפי היין התת-קרקעיים'],
+    en:['Traben-Trarbach','Day 3 · Art Nouveau and the underground wine cellars']}],
+  [49.9155, 7.0630, 'lodging','🛏️', false, 9, {
+    he:['ברנקסטל-קוס · בסיס לינה','לילות 3-6 · כרם ה-Doctor, טירת Landshut, ה-Vinothek ויקב Dr. Loosen'],
+    en:['Bernkastel-Kues · Home base','Nights 3-6 · The Doctor vineyard, Landshut castle, the Vinothek and Dr. Loosen']}],
+  [49.9330, 7.0400, 'winery','🍇', false, 10, {
+    he:['JJ Prüm + Markus Molitor · ולן','יום 5 · שני יקבי ענק והליכת הכרמים לאורך ה-Sonnenuhr'],
+    en:['JJ Prüm + Markus Molitor · Wehlen','Day 5 · Two giants of German wine and the vineyard walk along the Sonnenuhr']}],
+  [49.9910, 6.9990, 'sight','🌄', false, 11, {
+    he:['Ürziger Würzgarten','יום 5 · "גן התבלינים", כרם צפחה אדומה נדירה'],
+    en:['Ürziger Würzgarten','Day 5 · The "spice garden", a rare red-slate vineyard']}],
+  [49.8520, 6.8940, 'sight','⛵', false, 12, {
+    he:['נוימאגן-דרון','יום 6 בבוקר · הפלגה על שחזור ספינת יין רומית'],
+    en:['Neumagen-Dhron','Day 6 morning · A sail on a reconstructed Roman wine ship']}],
+  [49.9050, 6.9850, 'winery','🍇', false, 13, {
+    he:['Fritz Haag · בראונברג','יום 6 בצהריים · אדוני ה-Juffer Sonnenuhr'],
+    en:['Fritz Haag · Brauneberg','Day 6 midday · Masters of the Juffer Sonnenuhr']}],
+  [49.8850, 6.9160, 'michelin','🍽️', true, 14, {
+    he:['schanz.restaurant · פיספורט','יום 6 בערב · ★★★ ערב השיא של הטיול, בלב כרם ה-Goldtröpfchen'],
+    en:['schanz.restaurant · Piesport','Day 6 evening · ★★★ The trip\'s grand finale, in the heart of the Goldtröpfchen']}],
+  [49.7566, 6.6417, 'sight','🏛️', false, 15, {
+    he:['טרייר','יום 7 · פורטה ניגרה והאתרים הרומיים, סיום לפני הטיסה'],
+    en:['Trier','Day 7 · Porta Nigra and the Roman sites, the finale before the flight']}],
+  [50.0450, 8.5900, 'airport','🏁', false, 16, {
+    he:['חזרה לפרנקפורט (FRA)','יום 8 (6.5) · החזרת הרכב וטיסת אל על ישירה הביתה'],
+    en:['Back to Frankfurt (FRA)','Day 8 (May 6) · Return the car and catch the direct El Al flight home']}]
+];
+
+const routeOrder = stops.map(s => [s[0], s[1]]);
+L.polyline(routeOrder, {color:'#4f7d8c', weight:3, opacity:.5, dashArray:'7 7'}).addTo(map);
+
+const markers = stops.map(([lat,lng,type,emoji,big,num,txt]) => {
+  const m = L.marker([lat,lng], {icon: mkIcon(emoji,type,big,num,map.getZoom()), zIndexOffset: big?1000:0}).addTo(map);
+  m._meta = {emoji,type,big,num,txt};
+  return m;
+});
+
+function refreshPopups(){
+  markers.forEach(m => {
+    const [name, detail] = m._meta.txt[lang];
+    m.bindPopup(`<div class="${T[lang].popupCls}"><b>${name}</b><span class="pd">${detail}</span></div>`);
+  });
+}
+refreshPopups();
+
+map.on('zoomend', () => {
+  const z = map.getZoom();
+  markers.forEach(m => m.setIcon(mkIcon(m._meta.emoji, m._meta.type, m._meta.big, m._meta.num, z)));
+});
+
+/* ---------- place the map inside the active language page ---------- */
+function placeMap(){
+  const slot = document.querySelector(`#page-${lang} .map-slot`);
+  slot.appendChild(mapWrap);
+  setTimeout(() => { map.invalidateSize(); map.fitBounds(routeOrder, {padding:[36,36]}); }, 60);
+}
+
+/* ---------- fullscreen (button sits bottom-right, clear of the zoom controls) ---------- */
+const fsBtn = document.getElementById('fsBtn');
+function setFullscreen(on){
+  mapWrap.classList.toggle('fullscreen', on);
+  fsBtn.textContent = on ? T[lang].fsClose : T[lang].fs;
+  on ? map.scrollWheelZoom.enable() : map.scrollWheelZoom.disable();
+  document.body.style.overflow = on ? 'hidden' : '';
+  setTimeout(() => { map.invalidateSize(); map.fitBounds(routeOrder, {padding:[36,36]}); }, 60);
+}
+fsBtn.addEventListener('click', () => setFullscreen(!mapWrap.classList.contains('fullscreen')));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && mapWrap.classList.contains('fullscreen')) setFullscreen(false);
+});
+
+/* ---------- language toggle ---------- */
+const langBtn = document.getElementById('langBtn');
+function applyLang(){
+  document.getElementById('page-he').hidden = (lang !== 'he');
+  document.getElementById('page-en').hidden = (lang !== 'en');
+  document.documentElement.lang = lang;
+  document.documentElement.dir = (lang === 'he') ? 'rtl' : 'ltr';
+  langBtn.textContent = T[lang].langBtn;
+  fsBtn.textContent = mapWrap.classList.contains('fullscreen') ? T[lang].fsClose : T[lang].fs;
+  refreshPopups();
+  map.closePopup();
+  placeMap();
+  updateQuizFabs();
+  updateTrackerFabs();
+  window.scrollTo({top:0});
+}
+langBtn.addEventListener('click', () => { lang = (lang === 'he') ? 'en' : 'he'; applyLang(); });
+
+
+/* ---------- tracker FAB ---------- */
+function updateTrackerFabs(){
+  document.getElementById('trackerFabHe').style.display = (lang==='he') ? 'flex' : 'none';
+  document.getElementById('trackerFabEn').style.display = (lang==='en') ? 'flex' : 'none';
+}
+document.getElementById('trackerFabHe').addEventListener('click', () => document.getElementById('trackerOverlayHe').classList.add('open'));
+document.getElementById('trackerFabEn').addEventListener('click', () => document.getElementById('trackerOverlayEn').classList.add('open'));
+document.querySelectorAll('.tracker-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
+
+/* ---------- quiz FAB ---------- */
+function updateQuizFabs(){
+  document.getElementById('quizFabHe').style.display = (lang==='he') ? 'flex' : 'none';
+  document.getElementById('quizFabEn').style.display = (lang==='en') ? 'flex' : 'none';
+}
+document.getElementById('quizFabHe').addEventListener('click', () => document.getElementById('quizOverlayHe').classList.add('open'));
+document.getElementById('quizFabEn').addEventListener('click', () => document.getElementById('quizOverlayEn').classList.add('open'));
+document.querySelectorAll('.quiz-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
+
+/* ---------- quiz ---------- */
+const quizTxt = {
+  he:{score:'התוצאה שלכם: <b>{n}</b> מתוך 10 · ', lv:['מתחילים חמודים, בדיוק בשביל זה יש את הטיול 🍇','לא רע בכלל! אתם מגיעים מוכנים 🥂','מרשים! אתם כבר חצי מדריכי מוזל 🏆']},
+  en:{score:'Your score: <b>{n}</b> out of 10 · ', lv:['Charming beginners, that is exactly what the trip is for 🍇','Not bad at all! You are arriving prepared 🥂','Impressive! You are already half a Mosel guide 🏆']}
+};
+document.querySelectorAll('.quiz').forEach(quiz => {
+  const qlang = quiz.dataset.quiz;
+  const qs = quiz.querySelectorAll('.quiz-q');
+  const scoreEl = quiz.querySelector('.quiz-score');
+  let answered = 0, correct = 0;
+  qs.forEach(q => {
+    q.querySelectorAll('.qopt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (q.classList.contains('answered')) return;
+        q.classList.add('answered');
+        answered++;
+        if (btn.dataset.c) { correct++; btn.classList.add('correct'); }
+        else {
+          btn.classList.add('wrong');
+          q.querySelector('[data-c]').classList.add('correct');
+        }
+        q.querySelectorAll('.qopt').forEach(b => b.disabled = true);
+        if (answered === qs.length) {
+          const lv = correct <= 4 ? 0 : (correct <= 7 ? 1 : 2);
+          scoreEl.innerHTML = quizTxt[qlang].score.replace('{n}', correct) + quizTxt[qlang].lv[lv];
+          scoreEl.style.display = 'block';
+          scoreEl.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+      });
+    });
+  });
+});
+
+applyLang();
+</script>
+
+</body>
+</html>
