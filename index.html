@@ -258,7 +258,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
 <header>
   <div class="hero-inner">
     <div class="eyebrow">עמק המוזל · גרמניה · 7 ימים · 29.4 עד 6.5.2027</div>
-    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-16.7.2026, 17:10</div>
+    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-16.7.2026, 17:41</div>
     <h1>המוזל: שבוע בין צפחה, ריזלינג ונהר מתפתל</h1>
     <p class="hero-sub">מסלול של שבוע לאורך הנהר, מקוכם והטירות בצפון ועד טרייר הרומית בדרום: חמישה יקבים מהשורה הראשונה של גרמניה, כרמים בשיפוע הכי תלול באירופה, טירות מהאגדות, וערב שיא ביום שלפני האחרון במסעדת שלושה כוכבי מישלן.</p>
     <div class="hero-stats">
@@ -619,7 +619,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
 <header>
   <div class="hero-inner">
     <div class="eyebrow">MOSEL VALLEY · GERMANY · 7 DAYS · APR 29 – MAY 6, 2027</div>
-    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 16, 2026, 17:10</div>
+    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 16, 2026, 17:41</div>
     <h1>The Mosel: A Week of Slate, Riesling and a Winding River</h1>
     <p class="hero-sub">A one-week route along the river, from Cochem and its castles in the north to Roman Trier in the south: five of Germany's top wineries, Europe's steepest vineyards, fairytale castles, and a grand finale dinner on the second-to-last evening at a three-Michelin-star restaurant.</p>
     <div class="hero-stats">
@@ -1394,6 +1394,11 @@ function mkIcon(emoji, type, big, num, zoom){
   const k = scaleFor(zoom);
   const s = Math.round((big ? 37 : 34) * k);
   const badge = Math.max(13, Math.round(17 * k));
+  const badgeHtml = num ? `<div style="position:absolute;top:-${Math.round(badge*0.35)}px;left:-${Math.round(badge*0.35)}px;
+        width:${badge}px;height:${badge}px;border-radius:50%;background:${C[type]};color:#fff;
+        display:flex;align-items:center;justify-content:center;
+        font:700 ${Math.max(9,Math.round(10.5*k))}px Assistant,sans-serif;
+        border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)">${num}</div>` : '';
   return L.divIcon({
     className:'',
     iconSize:[s,s], iconAnchor:[s/2,s/2], popupAnchor:[0,-s/2],
@@ -1401,65 +1406,61 @@ function mkIcon(emoji, type, big, num, zoom){
       <div style="width:${s}px;height:${s}px;border-radius:50%;background:#fff;
         border:${Math.max(2,Math.round(3*k))}px solid ${C[type]};display:flex;align-items:center;justify-content:center;
         font-size:${Math.round((big?18:17)*k)}px;box-shadow:0 2px 6px rgba(0,0,0,.35)">${emoji}</div>
-      <div style="position:absolute;top:-${Math.round(badge*0.35)}px;left:-${Math.round(badge*0.35)}px;
-        width:${badge}px;height:${badge}px;border-radius:50%;background:${C[type]};color:#fff;
-        display:flex;align-items:center;justify-content:center;
-        font:700 ${Math.max(9,Math.round(10.5*k))}px Assistant,sans-serif;
-        border:1.5px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4)">${num}</div>
+      ${badgeHtml}
     </div>`
   });
 }
 
 const stops = [
   // lat, lng, type, emoji, big, num, {he:[name,detail], en:[name,detail]}
-  [50.0379, 8.5622, 'airport','✈️', false, 1, {
-    he:['שדה התעופה פרנקפורט (FRA)','יום 1 (29.4) · LY355 נחיתה 18:35 · יום 8 (6.5) · LY356 המראה 19:45'],
-    en:['Frankfurt Airport (FRA)','Day 1 (Apr 29) · LY355 landing 18:35 · Day 8 (May 6) · El Al evening flight home']}],
-  [50.2054, 7.3362, 'sight','🏰', false, 2, {
-    he:['בורג אלץ','יום 1 · הטירה היפה בגרמניה, הליכה ביער אל הטירה'],
-    en:['Burg Eltz','Day 1 · Germany\'s most beautiful castle, a forest walk to the gate']}],
-  [50.1469, 7.1660, 'lodging','🛏️', false, 3, {
+  [50.0379, 8.5622, 'airport','✈️', false, '', {
+    he:['שדה התעופה פרנקפורט (FRA)','נקודת התחלה · יום 1 (29.4) · LY355 נחיתה 18:35'],
+    en:['Frankfurt Airport (FRA)','Start · Day 1 (Apr 29) · LY355 lands 18:35']}],
+  [50.1469, 7.1660, 'lodging','🛏️', false, 1, {
     he:['קוכם · בסיס לינה','לילות 1-3 · טירת רייכסבורג, רכבל ל-Pinnerkreuz וערבים על הטיילת'],
     en:['Cochem · Home base','Nights 1-3 · Reichsburg Castle, the Pinnerkreuz chairlift and evenings on the promenade']}],
-  [50.1097, 7.2394, 'sight','⛴️', false, 4, {
-    he:['ביילשטיין','יום 2 · "פנינת המוזל", שייט צהריים וקפה בכפר הברוקי'],
-    en:['Beilstein','Day 2 · The "Pearl of the Mosel", a midday cruise and coffee in the baroque village']}],
-  [50.3110, 7.5160, 'winery','🍇', false, 5, {
+  [50.2054, 7.3362, 'sight','🏰', false, 2, {
+    he:['בורג אלץ','יום 2 · הטירה היפה בגרמניה, הליכה ביער אל הטירה'],
+    en:['Burg Eltz','Day 2 · Germany\'s most beautiful castle, a forest walk to the gate']}],
+  [50.3110, 7.5160, 'winery','🍇', false, 3, {
     he:['Heymann-Löwenstein · וינינגן','יום 2 · ריזלינג יבש מהטרסות של המוזל התחתון'],
     en:['Heymann-Löwenstein · Winningen','Day 2 · Dry Riesling from the Lower Mosel terraces']}],
-  [50.0950, 7.1290, 'sight','🥾', false, 6, {
-    he:['קלמונט · ברם','יום 3 · הקלטרשטייג בכרם התלול באירופה ותצפית הפרסה'],
-    en:['Calmont · Bremm','Day 3 · The Klettersteig through Europe\'s steepest vineyard and the horseshoe-bend view']}],
-  [50.0560, 7.1330, 'sight','🌄', false, 7, {
-    he:['תצפית Marienburg','יום 3 · הנקודה שרואים ממנה את הנהר משני צידי הרכס'],
-    en:['Marienburg viewpoint','Day 3 · The spot where the river appears on both sides of one ridge']}],
-  [49.9503, 7.1152, 'sight','🏛️', false, 8, {
-    he:['טראבן-טרארבך','יום 3 · אר-נובו ומרתפי היין התת-קרקעיים'],
-    en:['Traben-Trarbach','Day 3 · Art Nouveau and the underground wine cellars']}],
-  [49.9155, 7.0630, 'lodging','🛏️', false, 9, {
-    he:['ברנקסטל-קוס · בסיס לינה','לילות 3-6 · כרם ה-Doctor, טירת Landshut, ה-Vinothek ויקב Dr. Loosen'],
-    en:['Bernkastel-Kues · Home base','Nights 3-6 · The Doctor vineyard, Landshut castle, the Vinothek and Dr. Loosen']}],
-  [49.9330, 7.0400, 'winery','🍇', false, 10, {
-    he:['JJ Prüm + Markus Molitor · ולן','יום 5 · שני יקבי ענק והליכת הכרמים לאורך ה-Sonnenuhr'],
-    en:['JJ Prüm + Markus Molitor · Wehlen','Day 5 · Two giants of German wine and the vineyard walk along the Sonnenuhr']}],
-  [49.9910, 6.9990, 'sight','🌄', false, 11, {
-    he:['Ürziger Würzgarten','יום 5 · "גן התבלינים", כרם צפחה אדומה נדירה'],
-    en:['Ürziger Würzgarten','Day 5 · The "spice garden", a rare red-slate vineyard']}],
-  [49.8520, 6.8940, 'sight','⛵', false, 12, {
-    he:['נוימאגן-דרון','יום 6 בבוקר · הפלגה על שחזור ספינת יין רומית'],
-    en:['Neumagen-Dhron','Day 6 morning · A sail on a reconstructed Roman wine ship']}],
-  [49.9050, 6.9850, 'winery','🍇', false, 13, {
-    he:['Fritz Haag · בראונברג','יום 6 בצהריים · אדוני ה-Juffer Sonnenuhr'],
-    en:['Fritz Haag · Brauneberg','Day 6 midday · Masters of the Juffer Sonnenuhr']}],
-  [49.8850, 6.9160, 'michelin','🍽️', true, 14, {
-    he:['schanz.restaurant · פיספורט','יום 6 בערב · ★★★ ערב השיא של הטיול, בלב כרם ה-Goldtröpfchen'],
-    en:['schanz.restaurant · Piesport','Day 6 evening · ★★★ The trip\'s grand finale, in the heart of the Goldtröpfchen']}],
-  [49.7566, 6.6417, 'sight','🏛️', false, 15, {
-    he:['טרייר','יום 7 · פורטה ניגרה והאתרים הרומיים, סיום לפני הטיסה'],
-    en:['Trier','Day 7 · Porta Nigra and the Roman sites, the finale before the flight']}],
-  [50.0450, 8.5900, 'airport','🏁', false, 16, {
-    he:['חזרה לפרנקפורט (FRA)','יום 8 (6.5) · החזרת הרכב וטיסת אל על ישירה הביתה'],
-    en:['Back to Frankfurt (FRA)','Day 8 (May 6) · Return the car and catch the direct El Al flight home']}]
+  [50.1097, 7.2394, 'sight','⛴️', false, 4, {
+    he:['ביילשטיין','יום 3 · "פנינת המוזל", שייט צהריים וקפה בכפר הברוקי'],
+    en:['Beilstein','Day 3 · The "Pearl of the Mosel", a midday cruise and coffee in the baroque village']}],
+  [50.0950, 7.1290, 'sight','🥾', false, 5, {
+    he:['קלמונט · ברם','יום 4 · הקלטרשטייג בכרם התלול באירופה ותצפית הפרסה'],
+    en:['Calmont · Bremm','Day 4 · The Klettersteig through Europe\'s steepest vineyard and the horseshoe-bend view']}],
+  [50.0560, 7.1330, 'sight','🌄', false, 6, {
+    he:['תצפית Marienburg','יום 4 · הנקודה שרואים ממנה את הנהר משני צידי הרכס'],
+    en:['Marienburg viewpoint','Day 4 · The spot where the river appears on both sides of one ridge']}],
+  [49.9503, 7.1152, 'sight','🏛️', false, 7, {
+    he:['טראבן-טרארבך','יום 4 · אר-נובו ומרתפי היין התת-קרקעיים'],
+    en:['Traben-Trarbach','Day 4 · Art Nouveau and the underground wine cellars']}],
+  [49.9155, 7.0630, 'lodging','🛏️', false, 8, {
+    he:['ברנקסטל-קוס · בסיס לינה','לילות 4-7 · כרם ה-Doctor, ה-Vinothek, Dr. Loosen (יום 5) וטירת Landshut'],
+    en:['Bernkastel-Kues · Home base','Nights 4-7 · The Doctor vineyard, the Vinothek, Dr. Loosen (Day 5) and Landshut castle']}],
+  [49.9330, 7.0400, 'winery','🍇', false, 9, {
+    he:['JJ Prüm + Markus Molitor · ולן','יום 6 · שני יקבי ענק והליכת הכרמים לאורך ה-Sonnenuhr'],
+    en:['JJ Prüm + Markus Molitor · Wehlen','Day 6 · Two giants of German wine and the vineyard walk along the Sonnenuhr']}],
+  [49.9910, 6.9990, 'sight','🌄', false, 10, {
+    he:['Ürziger Würzgarten','יום 6 · "גן התבלינים", כרם צפחה אדומה נדירה'],
+    en:['Ürziger Würzgarten','Day 6 · The "spice garden", a rare red-slate vineyard']}],
+  [49.8520, 6.8940, 'sight','⛵', false, 11, {
+    he:['נוימאגן-דרון','יום 7 בבוקר · הפלגה על שחזור ספינת יין רומית'],
+    en:['Neumagen-Dhron','Day 7 morning · A sail on a reconstructed Roman wine ship']}],
+  [49.9050, 6.9850, 'winery','🍇', false, 12, {
+    he:['Fritz Haag · בראונברג','יום 7 בצהריים · אדוני ה-Juffer Sonnenuhr'],
+    en:['Fritz Haag · Brauneberg','Day 7 midday · Masters of the Juffer Sonnenuhr']}],
+  [49.8850, 6.9160, 'michelin','🍽️', true, 13, {
+    he:['schanz.restaurant · פיספורט','יום 7 בערב · ★★★ ערב השיא של הטיול, בלב כרם ה-Goldtröpfchen'],
+    en:['schanz.restaurant · Piesport','Day 7 evening · ★★★ The trip\'s grand finale, in the heart of the Goldtröpfchen']}],
+  [49.7566, 6.6417, 'sight','🏛️', false, 14, {
+    he:['טרייר','יום 8 · פורטה ניגרה והאתרים הרומיים, סיום לפני הטיסה'],
+    en:['Trier','Day 8 · Porta Nigra and the Roman sites, the finale before the flight']}],
+  [50.0450, 8.5900, 'airport','🏁', false, '', {
+    he:['חזרה לפרנקפורט (FRA)','נקודת סיום · יום 8 (6.5) · החזרת רכב וטיסת LY356 (19:45)'],
+    en:['Back to Frankfurt (FRA)','End · Day 8 (May 6) · Return the car and the LY356 flight home']}]
 ];
 
 const routeOrder = stops.map(s => [s[0], s[1]]);
