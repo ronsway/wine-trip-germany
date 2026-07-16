@@ -77,7 +77,10 @@ h2{font-size:1.9rem;font-weight:700;margin-bottom:8px;color:var(--slate)}
 .day li:last-child{border-bottom:none}
 .day li::before{content:"";position:absolute;inset-inline-start:0;top:16px;width:9px;height:9px;
   border-radius:50%;background:var(--leaf);opacity:.7}
-.day li.w::before{background:var(--riesling)}
+.day li.w{background:linear-gradient(90deg,rgba(201,162,39,.14),rgba(201,162,39,.03));
+  border-inline-start:3px solid var(--riesling);border-radius:0 8px 8px 0;padding-inline-start:36px;margin-block:3px}
+.day li.w::before{content:"🍷";background:none;border-radius:0;width:auto;height:auto;
+  font-size:1.02rem;top:5px;inset-inline-start:10px;opacity:1}
 .day li.f::before{background:#a3543f}
 .day li b{font-weight:700}
 .tip{margin-top:14px;background:#f6f4ea;border-inline-start:4px solid var(--riesling);
@@ -249,7 +252,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
 <header>
   <div class="hero-inner">
     <div class="eyebrow">עמק המוזל · גרמניה · 7 ימים · 29.4 עד 6.5.2027</div>
-    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-16.7.2026, 17:02</div>
+    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-16.7.2026, 17:08</div>
     <h1>המוזל: שבוע בין צפחה, ריזלינג ונהר מתפתל</h1>
     <p class="hero-sub">מסלול של שבוע לאורך הנהר, מקוכם והטירות בצפון ועד טרייר הרומית בדרום: חמישה יקבים מהשורה הראשונה של גרמניה, כרמים בשיפוע הכי תלול באירופה, טירות מהאגדות, וערב שיא ביום שלפני האחרון במסעדת שלושה כוכבי מישלן.</p>
     <div class="hero-stats">
@@ -610,7 +613,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
 <header>
   <div class="hero-inner">
     <div class="eyebrow">MOSEL VALLEY · GERMANY · 7 DAYS · APR 29 – MAY 6, 2027</div>
-    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 16, 2026, 17:02</div>
+    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 16, 2026, 17:08</div>
     <h1>The Mosel: A Week of Slate, Riesling and a Winding River</h1>
     <p class="hero-sub">A one-week route along the river, from Cochem and its castles in the north to Roman Trier in the south: five of Germany's top wineries, Europe's steepest vineyards, fairytale castles, and a grand finale dinner on the second-to-last evening at a three-Michelin-star restaurant.</p>
     <div class="hero-stats">
