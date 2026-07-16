@@ -81,7 +81,13 @@ h2{font-size:1.9rem;font-weight:700;margin-bottom:8px;color:var(--slate)}
   border-inline-start:3px solid var(--riesling);border-radius:0 8px 8px 0;padding-inline-start:36px;margin-block:3px}
 .day li.w::before{content:"🍷";background:none;border-radius:0;width:auto;height:auto;
   font-size:1.02rem;top:5px;inset-inline-start:10px;opacity:1}
-.day li.f::before{background:#a3543f}
+.day li.f{background:linear-gradient(90deg,rgba(163,84,63,.13),rgba(163,84,63,.03));
+  border-inline-start:3px solid #a3543f;border-radius:0 8px 8px 0;padding-inline-start:36px;margin-block:3px}
+.day li.f::before{content:"🍽️";background:none;border-radius:0;width:auto;height:auto;
+  font-size:1.02rem;top:5px;inset-inline-start:10px;opacity:1}
+.day li.f.star{background:linear-gradient(90deg,rgba(201,162,39,.20),rgba(163,84,63,.06));
+  border-inline-start:3px solid var(--riesling)}
+.day li.f.star::before{content:"⭐"}
 .day li b{font-weight:700}
 .tip{margin-top:14px;background:#f6f4ea;border-inline-start:4px solid var(--riesling);
   padding:10px 14px;border-radius:8px;font-size:.92rem}
@@ -252,7 +258,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
 <header>
   <div class="hero-inner">
     <div class="eyebrow">עמק המוזל · גרמניה · 7 ימים · 29.4 עד 6.5.2027</div>
-    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-16.7.2026, 17:08</div>
+    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-16.7.2026, 17:10</div>
     <h1>המוזל: שבוע בין צפחה, ריזלינג ונהר מתפתל</h1>
     <p class="hero-sub">מסלול של שבוע לאורך הנהר, מקוכם והטירות בצפון ועד טרייר הרומית בדרום: חמישה יקבים מהשורה הראשונה של גרמניה, כרמים בשיפוע הכי תלול באירופה, טירות מהאגדות, וערב שיא ביום שלפני האחרון במסעדת שלושה כוכבי מישלן.</p>
     <div class="hero-stats">
@@ -371,7 +377,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
           <li>בוקר רגוע: נסיעה נופית לנוימאגן-דרון, "כפר היין העתיק בגרמניה". החוויה המיוחדת: הפלגה קצרה על <b>Stella Noviomagi</b>, שחזור שייט של ספינת יין רומית עם כוס ריזלינג ביד (בעונה, לתאם מראש)</li>
           <li class="w">צהריים: טעימות אצל <b>Fritz Haag</b> בבראונברג, מאדוני ה-Juffer Sonnenuhr (בתיאום מראש)</li>
           <li>אחר הצהריים: תצפית על כרם <b>Piesporter Goldtröpfchen</b>, אמפיתיאטרון הכרמים המפורסם, ומנוחה לפני הערב</li>
-          <li class="f">ערב: <b>schanz.restaurant</b> בפיספורט, שלושה כוכבי מישלן. ערב השיא של הטיול, 15 דקות בלבד מברנקסטל</li>
+          <li class="f star">ערב: <b>schanz.restaurant</b> בפיספורט, שלושה כוכבי מישלן. ערב השיא של הטיול, 15 דקות בלבד מברנקסטל</li>
         </ul>
         <div class="tip"><b>חשוב מאוד:</b> schanz סגורים ראשון עד שלישי (מאומת). ערב המישלן שלנו נופל על רביעי (5.5), היום הראשון שהם פתוחים בשבוע, מושלם. להזמין חודשיים-שלושה מראש. האופציה הכי נוחה: לישון במלון הקטן של המסעדה עצמה ולוותר לגמרי על נהיגה אחרי היין.</div>
       </div>
@@ -613,7 +619,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
 <header>
   <div class="hero-inner">
     <div class="eyebrow">MOSEL VALLEY · GERMANY · 7 DAYS · APR 29 – MAY 6, 2027</div>
-    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 16, 2026, 17:08</div>
+    <div style="display:inline-block;margin-top:12px;padding:5px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 16, 2026, 17:10</div>
     <h1>The Mosel: A Week of Slate, Riesling and a Winding River</h1>
     <p class="hero-sub">A one-week route along the river, from Cochem and its castles in the north to Roman Trier in the south: five of Germany's top wineries, Europe's steepest vineyards, fairytale castles, and a grand finale dinner on the second-to-last evening at a three-Michelin-star restaurant.</p>
     <div class="hero-stats">
@@ -732,7 +738,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
           <li>Relaxed morning: a scenic drive to Neumagen-Dhron, "Germany's oldest wine village". The special experience: a short sail on the <b>Stella Noviomagi</b>, a reconstructed Roman wine ship, glass of Riesling in hand (seasonal, book ahead)</li>
           <li class="w">Midday: tasting at <b>Fritz Haag</b> in Brauneberg, masters of the Juffer Sonnenuhr (by appointment)</li>
           <li>Afternoon: viewpoint over the <b>Piesporter Goldtröpfchen</b>, the famous amphitheater of vines, and a rest before the evening</li>
-          <li class="f">Evening: <b>schanz.restaurant</b> in Piesport, three Michelin stars. The trip's grand finale, just 15 minutes from Bernkastel</li>
+          <li class="f star">Evening: <b>schanz.restaurant</b> in Piesport, three Michelin stars. The trip's grand finale, just 15 minutes from Bernkastel</li>
         </ul>
         <div class="tip"><b>Very important:</b> schanz is closed Sunday through Tuesday (confirmed). Our Michelin evening falls on Wednesday (May 5), the first day they open each week — perfect. Reserve two to three months ahead. The most convenient option: sleep at the restaurant's own small hotel and skip driving after wine entirely.</div>
       </div>
