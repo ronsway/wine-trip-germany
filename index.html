@@ -180,6 +180,8 @@ h2{font-size:1.9rem;font-weight:700;margin-bottom:8px;color:var(--slate)}
   font-family:'Frank Ruhl Libre',serif;font-size:1.25rem;display:none}
 .quiz-score b{color:var(--riesling);font-size:1.8rem}
 
+.quiz-restart{display:block;margin:20px auto 0;background:var(--riesling);color:#2b333b;border:none;border-radius:999px;padding:11px 26px;font:700 .95rem 'Assistant',sans-serif;cursor:pointer;box-shadow:0 3px 12px rgba(201,162,39,.3)}
+.quiz-restart:hover{filter:brightness(1.05)}
 /* ---------- QUIZ MODAL ---------- */
 .quiz-fab{position:fixed;bottom:24px;right:24px;z-index:8000;
   background:var(--riesling);color:#fff;border:none;border-radius:50px;padding:14px 22px;cursor:pointer;
@@ -268,7 +270,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px">
       <a href="https://photos.app.goo.gl/Z6qsGScog4yNhemi7" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;background:var(--riesling);color:#2b333b;font-weight:700;text-decoration:none;font-size:1rem;box-shadow:0 4px 16px rgba(201,162,39,.42)">📸 תמונות הטיול · אלבום משותף</a>
-      <span style="display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-17.7.2026, 16:44</span>
+      <span style="display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 עדכון אחרון ב-17.7.2026, 16:57</span>
     </div>
   </div>
 </header>
@@ -632,7 +634,7 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:22px">
       <a href="https://photos.app.goo.gl/Z6qsGScog4yNhemi7" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;background:var(--riesling);color:#2b333b;font-weight:700;text-decoration:none;font-size:1rem;box-shadow:0 4px 16px rgba(201,162,39,.42)">📸 Trip Photos · Shared Album</a>
-      <span style="display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 17, 2026, 16:44</span>
+      <span style="display:inline-block;padding:6px 14px;border-radius:999px;background:rgba(201,162,39,.18);border:1px solid rgba(201,162,39,.45);color:#e8d9a0;font-size:.82rem;font-weight:500;letter-spacing:.02em">🔄 Last updated on Jul 17, 2026, 16:57</span>
     </div>
   </div>
 </header>
@@ -1167,99 +1169,10 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
 <div class="quiz-overlay" id="quizOverlayHe"><div class="quiz-modal" dir="rtl">
   <button class="quiz-modal-close" onclick="document.getElementById('quizOverlayHe').classList.remove('open')">✕</button>
     <h2>חידון המוזל · 10 שאלות לפני הנסיעה</h2>
-  <p class="section-lead">בדקו כמה אתם כבר מכירים את האזור. כל תשובה פותחת הסבר קצר, כך שגם טעות שווה משהו.</p>
-  <div class="quiz" data-quiz="he">
-    <div class="quiz-q"><h4><span class="qnum">1</span>מה הפך את המוזל לאזור ריזלינג כל כך מיוחד?</h4>
-      <div class="qopts">
-        <button class="qopt">אקלים טרופי חריג</button>
-        <button class="qopt" data-c="1">קרקע צפחה שאוגרת חום ומדרונות תלולים לשמש</button>
-        <button class="qopt">השקיה ממי הנהר</button>
-        <button class="qopt">חוק גרמני שאוסר לגדל שם ענבים אחרים</button>
-      </div>
-      <div class="qexp">הצפחה (Schiefer) סופגת חום ביום ומחזירה אותו לגפנים בלילה, והמדרונות התלולים תופסים כל קרן שמש באקלים צפוני. זה מה שמאפשר לריזלינג להבשיל כל כך צפונית.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">2</span>איזו עיר נחשבת לעתיקה ביותר בגרמניה?</h4>
-      <div class="qopts">
-        <button class="qopt">קלן</button>
-        <button class="qopt">ברלין</button>
-        <button class="qopt" data-c="1">טרייר</button>
-        <button class="qopt">מיינץ</button>
-      </div>
-      <div class="qexp">טרייר נוסדה על ידי הרומאים בסביבות שנת 16 לפנה"ס בשם Augusta Treverorum, והייתה בירת האימפריה הרומית המערבית לתקופה. פורטה ניגרה הוא שער העיר הרומי השמור בעולם מצפון לאלפים.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">3</span>על פי האגדה, מה עשה היין מכרם ה-Bernkasteler Doctor במאה ה-14?</h4>
-      <div class="qopts">
-        <button class="qopt" data-c="1">ריפא ארכיבישוף חולה</button>
-        <button class="qopt">שימש כתחליף למים בזמן מגפה</button>
-        <button class="qopt">הוגש בחתונת קיסר</button>
-        <button class="qopt">שולם כמס לוותיקן</button>
-      </div>
-      <div class="qexp">האגדה מספרת שהארכיבישוף בומונד השני מטרייר החלים ממחלה קשה אחרי ששתה מהיין, והעניק לכרם את השם "דוקטור". היום זה מהכרמים היקרים בגרמניה.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">4</span>מה זה בעצם "Sonnenuhr" שמופיע בשמות הכרמים המפורסמים (Wehlener Sonnenuhr, Juffer Sonnenuhr)?</h4>
-      <div class="qopts">
-        <button class="qopt">שם משפחה של כורמים</button>
-        <button class="qopt">זן ענבים עתיק</button>
-        <button class="qopt" data-c="1">שעון שמש אמיתי שנבנה בתוך הכרם</button>
-        <button class="qopt">כינוי לחלקה הכי חמה</button>
-      </div>
-      <div class="qexp">אלה שעוני שמש אמיתיים שנבנו במאה ה-19 בין הגפנים כדי שהפועלים בכרמים ידעו מה השעה. שעון השמש של ולן משנת 1842 עדיין עומד, ותראו אותו בהליכת הכרמים ביום 5.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">5</span>מה מיוחד בקרקע של כרם ה-Ürziger Würzgarten ("גן התבלינים")?</h4>
-      <div class="qopts">
-        <button class="qopt">היא מכילה חול ים עתיק</button>
-        <button class="qopt" data-c="1">צפחה אדומה וולקנית נדירה</button>
-        <button class="qopt">היא מיובאת מצרפת</button>
-        <button class="qopt">היא מוחלפת כל עשור</button>
-      </div>
-      <div class="qexp">בניגוד לצפחה הכחולה-אפורה של רוב המוזל, באורציג הקרקע אדומה, עם מרכיב וולקני עתיק. התוצאה: ריזלינג "מתובל", אקזוטי ושונה מכל שכניו.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">6</span>איפה מתקיים פסטיבל היין העתיק ביותר בגרמניה?</h4>
-      <div class="qopts">
-        <button class="qopt">מינכן</button>
-        <button class="qopt">ברנקסטל-קוס</button>
-        <button class="qopt" data-c="1">וינינגן</button>
-        <button class="qopt">היידלברג</button>
-      </div>
-      <div class="qexp">פסטיבל היין של וינינגן נחגג מאז המאה ה-16 בסוף אוגוסט, יום 2 של המסלול עובר שם, אם כי במאי הפסטיבל לא מתקיים.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">7</span>מה ההבדל בין הכמוסות הלבנות, הירוקות והזהובות של Markus Molitor?</h4>
-      <div class="qopts">
-        <button class="qopt">איכות הבציר</button>
-        <button class="qopt" data-c="1">רמת המתיקות של היין</button>
-        <button class="qopt">גיל הגפנים</button>
-        <button class="qopt">סוג החבית</button>
-      </div>
-      <div class="qexp">לבן = יבש, ירוק = חצי יבש, זהוב = עם מתיקות. שיטת סימון גאונית בפשטותה שתעזור לכם מאוד בטעימה ביום 5, כשמולכם עשרות יינות חד-כרמיים.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">8</span>מהו Federweisser שנמכר באזור בעונת הבציר?</h4>
-      <div class="qopts">
-        <button class="qopt">ליקר מאפרסק הכרמים</button>
-        <button class="qopt">ברנדי מזוקק מריזלינג</button>
-        <button class="qopt" data-c="1">יין צעיר תוסס שעדיין באמצע התסיסה</button>
-        <button class="qopt">מיץ ענבים לילדים</button>
-      </div>
-      <div class="qexp">Federweisser הוא יין בשלבי תסיסה, עכור, מתקתק ומעט מוגז, שנמכר ימים ספורים אחרי הבציר. מגישים אותו עם עוגת בצל, הטיול שלנו במאי הוא לפני עונת הבציר, אז את הפדרוויסר תשמרו לביקור הבא בסתיו.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">9</span>למה דווקא הריזלינגים המתוקים-למחצה של המוזל (Kabinett, Spätlese) מסוגלים להתיישן עשרות שנים?</h4>
-      <div class="qopts">
-        <button class="qopt">בגלל אחוזי האלכוהול הגבוהים</button>
-        <button class="qopt" data-c="1">בזכות החומציות הגבוהה שמשמרת את היין</button>
-        <button class="qopt">כי הם מאוחסנים במרתפי צפחה</button>
-        <button class="qopt">בגלל פקקי זכוכית מיוחדים</button>
-      </div>
-      <div class="qexp">דווקא ההפך מאלכוהול: יינות המוזל קלים (לעיתים 8% בלבד), אבל החומציות החדה שלהם פועלת כחומר משמר טבעי. Kabinett טוב של JJ Prüm יכול להיפתח בשיא גם אחרי 30 שנה.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">10</span>מה עשה תומאס שאנץ, השף של מסעדת שלושת הכוכבים בפיספורט, לפני שפתח אותה?</h4>
-      <div class="qopts">
-        <button class="qopt">היה כורם ביקב משפחתי</button>
-        <button class="qopt" data-c="1">התמחה אצל גדולי השפים של גרמניה וחזר לעסק המשפחתי</button>
-        <button class="qopt">היה שף בקו התעופה לופטהנזה</button>
-        <button class="qopt">ניהל מסעדה בפריז</button>
-      </div>
-      <div class="qexp">שאנץ הוא בן פיספורט שהתמחה אצל הראלד וולפארט וקלאוס ארפורט, מגדולי המטבח הגרמני, וחזר הביתה להפוך את הגסטהאוס המשפחתי הקטן למסעדת שלושה כוכבים. שם תאכלו בערב יום 6.</div>
-    </div>
+  <p class="section-lead">בדקו כמה אתם כבר מכירים את האזור. בכל כניסה מוגרלות 10 שאלות מתוך בנק גדול, אז אפשר לשחק שוב ושוב. כל תשובה פותחת הסבר קצר.</p>
+  <div class="quiz" data-quiz="he"></div>
     <div class="quiz-score"></div>
+    <button class="quiz-restart" data-quiz="he">🔄 שאלות חדשות</button>
   </div>
 
 </div></div>
@@ -1269,98 +1182,9 @@ footer{text-align:center;color:var(--muted);font-size:.85rem;padding:30px 20px 5
   <button class="quiz-modal-close" onclick="document.getElementById('quizOverlayEn').classList.remove('open')">✕</button>
     <h2>The Mosel Quiz · 10 Questions Before You Go</h2>
   <p class="section-lead">See how well you already know the region. Every answer reveals a short explanation, so even a mistake teaches you something.</p>
-  <div class="quiz" data-quiz="en">
-    <div class="quiz-q"><h4><span class="qnum">1</span>What makes the Mosel such an exceptional Riesling region?</h4>
-      <div class="qopts">
-        <button class="qopt">An unusual tropical microclimate</button>
-        <button class="qopt" data-c="1">Heat-storing slate soil and steep, sun-catching slopes</button>
-        <button class="qopt">Irrigation from the river</button>
-        <button class="qopt">A German law banning other grape varieties</button>
-      </div>
-      <div class="qexp">The slate (Schiefer) absorbs heat by day and radiates it back to the vines at night, while the steep slopes catch every ray of sun in a northern climate. That's what lets Riesling ripen this far north.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">2</span>Which city is considered Germany's oldest?</h4>
-      <div class="qopts">
-        <button class="qopt">Cologne</button>
-        <button class="qopt">Berlin</button>
-        <button class="qopt" data-c="1">Trier</button>
-        <button class="qopt">Mainz</button>
-      </div>
-      <div class="qexp">Trier was founded by the Romans around 16 BC as Augusta Treverorum and was for a time the capital of the Western Roman Empire. The Porta Nigra is the best-preserved Roman city gate north of the Alps.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">3</span>According to legend, what did wine from the Bernkasteler Doctor vineyard do in the 14th century?</h4>
-      <div class="qopts">
-        <button class="qopt" data-c="1">Cured a sick archbishop</button>
-        <button class="qopt">Replaced water during a plague</button>
-        <button class="qopt">Was served at an emperor's wedding</button>
-        <button class="qopt">Was paid as tax to the Vatican</button>
-      </div>
-      <div class="qexp">Legend says Archbishop Boemund II of Trier recovered from a grave illness after drinking the wine, giving the vineyard its name, "Doctor". Today it's among Germany's most expensive vineyards.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">4</span>What is a "Sonnenuhr", the word in famous vineyard names like Wehlener Sonnenuhr and Juffer Sonnenuhr?</h4>
-      <div class="qopts">
-        <button class="qopt">A vintner family name</button>
-        <button class="qopt">An ancient grape variety</button>
-        <button class="qopt" data-c="1">An actual sundial built into the vineyard</button>
-        <button class="qopt">A nickname for the warmest parcel</button>
-      </div>
-      <div class="qexp">These are real sundials built in the 19th century among the vines so vineyard workers would know the time. The Wehlen sundial from 1842 still stands, and you'll see it on the day 5 vineyard walk.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">5</span>What is special about the soil of the Ürziger Würzgarten ("spice garden")?</h4>
-      <div class="qopts">
-        <button class="qopt">It contains ancient sea sand</button>
-        <button class="qopt" data-c="1">Rare red volcanic slate</button>
-        <button class="qopt">It is imported from France</button>
-        <button class="qopt">It is replaced every decade</button>
-      </div>
-      <div class="qexp">Unlike the blue-grey slate of most of the Mosel, Ürzig's soil is red, with an ancient volcanic component. The result: "spicy", exotic Riesling unlike any of its neighbors.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">6</span>Where is Germany's oldest wine festival held?</h4>
-      <div class="qopts">
-        <button class="qopt">Munich</button>
-        <button class="qopt">Bernkastel-Kues</button>
-        <button class="qopt" data-c="1">Winningen</button>
-        <button class="qopt">Heidelberg</button>
-      </div>
-      <div class="qexp">The Winningen wine festival has been celebrated since the 16th century in late August, Day 2 of the route passes right through it, though in May the festival isn't on.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">7</span>What do Markus Molitor's white, green and gold capsules indicate?</h4>
-      <div class="qopts">
-        <button class="qopt">The vintage quality</button>
-        <button class="qopt" data-c="1">The wine's sweetness level</button>
-        <button class="qopt">The age of the vines</button>
-        <button class="qopt">The type of barrel</button>
-      </div>
-      <div class="qexp">White = dry, green = off-dry, gold = with sweetness. A brilliantly simple system that will help you a lot at the day 5 tasting, facing dozens of single-vineyard wines.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">8</span>What is the Federweisser sold in the region during harvest season?</h4>
-      <div class="qopts">
-        <button class="qopt">A vineyard-peach liqueur</button>
-        <button class="qopt">A brandy distilled from Riesling</button>
-        <button class="qopt" data-c="1">Young, fizzy wine still mid-fermentation</button>
-        <button class="qopt">Grape juice for children</button>
-      </div>
-      <div class="qexp">Federweisser is wine caught mid-fermentation: cloudy, sweetish and slightly fizzy, sold just days after the harvest. It's served with onion tart, our May trip is before harvest, so Federweisser will have to wait for an autumn return.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">9</span>Why can the Mosel's off-dry Rieslings (Kabinett, Spätlese) age for decades?</h4>
-      <div class="qopts">
-        <button class="qopt">Because of their high alcohol content</button>
-        <button class="qopt" data-c="1">Thanks to high acidity that preserves the wine</button>
-        <button class="qopt">Because they are stored in slate cellars</button>
-        <button class="qopt">Because of special glass stoppers</button>
-      </div>
-      <div class="qexp">The opposite of alcohol, in fact: Mosel wines are light (sometimes just 8%), but their razor-sharp acidity acts as a natural preservative. A good JJ Prüm Kabinett can open at its peak even after 30 years.</div>
-    </div>
-    <div class="quiz-q"><h4><span class="qnum">10</span>What did Thomas Schanz, the chef of Piesport's three-star restaurant, do before opening it?</h4>
-      <div class="qopts">
-        <button class="qopt">He was a vintner at a family winery</button>
-        <button class="qopt" data-c="1">Trained under Germany's greatest chefs and returned to the family business</button>
-        <button class="qopt">Was a chef for Lufthansa</button>
-        <button class="qopt">Ran a restaurant in Paris</button>
-      </div>
-      <div class="qexp">Schanz is a Piesport native who trained under Harald Wohlfahrt and Klaus Erfort, giants of German cuisine, then came home to turn the small family Gasthaus into a three-star restaurant. That's where you'll dine on the evening of day 6.</div>
-    </div>
+  <div class="quiz" data-quiz="en"></div>
     <div class="quiz-score"></div>
+    <button class="quiz-restart" data-quiz="en">🔄 New questions</button>
   </div>
 
 </div></div>
@@ -1545,42 +1369,57 @@ function updateQuizFabs(){
   document.getElementById('quizFabHe').style.display = (lang==='he') ? 'flex' : 'none';
   document.getElementById('quizFabEn').style.display = (lang==='en') ? 'flex' : 'none';
 }
-document.getElementById('quizFabHe').addEventListener('click', () => document.getElementById('quizOverlayHe').classList.add('open'));
-document.getElementById('quizFabEn').addEventListener('click', () => document.getElementById('quizOverlayEn').classList.add('open'));
+document.getElementById('quizFabHe').addEventListener('click', () => { renderQuiz('he'); document.getElementById('quizOverlayHe').classList.add('open'); });
+document.getElementById('quizFabEn').addEventListener('click', () => { renderQuiz('en'); document.getElementById('quizOverlayEn').classList.add('open'); });
 document.querySelectorAll('.quiz-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
 
-/* ---------- quiz ---------- */
+const QUIZ_BANK = {"he": [{"q": "מה הפך את המוזל לאזור ריזלינג כל כך מיוחד?", "o": ["אקלים טרופי חריג", "קרקע צפחה שאוגרת חום ומדרונות תלולים לשמש", "השקיה מלאכותית ממי הנהר", "חוק שאוסר לגדל שם ענבים אחרים"], "c": 1, "e": "הצפחה (Schiefer) סופגת חום ביום ומחזירה אותו בלילה, והמדרונות התלולים תופסים כל קרן שמש. זה מאפשר לריזלינג להבשיל צפונה כל כך."}, {"q": "איזו עיר נחשבת לעתיקה ביותר בגרמניה?", "o": ["קלן", "ברלין", "טרייר", "מיינץ"], "c": 2, "e": "טרייר נוסדה בידי הרומאים בסביבות 16 לפנה\"ס. פורטה ניגרה הוא שער העיר הרומי השמור ביותר מצפון לאלפים."}, {"q": "לפי האגדה, מה עשה היין מכרם ה-Bernkasteler Doctor?", "o": ["ריפא ארכיבישוף חולה", "שימש כתחליף למים במגפה", "הוגש בחתונת קיסר", "שולם כמס לוותיקן"], "c": 0, "e": "לפי האגדה הארכיבישוף בומונד השני החלים אחרי ששתה מהיין, והעניק לכרם את השם \"דוקטור\". היום זה מהכרמים היקרים בגרמניה."}, {"q": "מה זה \"Sonnenuhr\" שמופיע בשמות כרמים (Wehlener Sonnenuhr, Juffer Sonnenuhr)?", "o": ["זן ענבים נדיר", "שעון שמש שנבנה בכרם", "סוג של חבית", "תו איכות ממשלתי"], "c": 1, "e": "Sonnenuhr = שעון שמש. בנו אותם בכרמים התלולים כדי לתת לכורמים שעון, והם סימנו את החלקות הטובות ביותר הפונות לשמש."}, {"q": "במה מיוחד כרם ה-Calmont ליד ברם, שתעברו בו?", "o": ["הכרם התלול ביותר באירופה (~65°)", "הכרם העתיק ביותר בעולם", "הכרם היחיד ללא צפחה", "הכרם הגדול ביותר בגרמניה"], "c": 0, "e": "הקלמונט הוא מהכרמים התלולים בעולם, עד ~65 מעלות. הכורמים עובדים שם עם רתמות, ויש בו קלטרשטייג מאובטח."}, {"q": "איזה זן שולט במוזל, מעל 60% מהשטח?", "o": ["שרדונה", "ריזלינג", "פינו נואר", "מרלו"], "c": 1, "e": "ריזלינג הוא הזן המזוהה עם המוזל ומכסה רוב הכרמים. הצפחה והאקלים הקריר נותנים לו חומציות מלוטשת וארומות מינרליות."}, {"q": "לאן נשפך נהר המוזל?", "o": ["לריין בקובלנץ", "לים הצפוני", "לדנובה", "לאגם בודנזה"], "c": 0, "e": "המוזל נשפך לריין בקובלנץ, ב\"פינת גרמניה\" (Deutsches Eck). וינינגן, שבה HL, נמצאת ממש לפני השפך."}, {"q": "באיזה כפר נמצא היקב Heymann-Löwenstein שתבקרו בו?", "o": ["ברנקסטל", "וינינגן", "פיספורט", "בראונברג"], "c": 1, "e": "HL יושב בווינינגן שבמוזל התחתון (Terrassenmosel), הקצה הצפוני של העמק. חלוצי ריזלינג יבש מהטרסות, מכרמי Uhlen ו-Röttgen."}, {"q": "אצל Markus Molitor, מה מסמנים צבעי הקפסולה (לבן/ירוק/זהב)?", "o": ["גיל היין", "רמת המתיקות: יבש / חצי-יבש / מתוק", "דירוג מחיר", "סוג החבית"], "c": 1, "e": "מוליטור מסמן במכסה: לבן = יבש, ירוק = חצי-יבש, זהב = מתוק. שיטה חכמה כי אותו כרם יכול לתת יין בכל רמת מתיקות."}, {"q": "באיזה כרם מפורסם קשור היקב Dr. Loosen?", "o": ["Wehlener Sonnenuhr", "שאטו מרגו", "קלו דה וژו", "בארולו"], "c": 0, "e": "Dr. Loosen מחזיק חלקות בכרמי העל של המוזל, בהם Wehlener Sonnenuhr ו-Erdener Prälat. ארנסט לוזן החזיר את המוזל למפה העולמית."}, {"q": "עם איזה כרם מזוהה היקב Fritz Haag?", "o": ["Brauneberger Juffer", "Piesporter Goldtröpfchen", "Scharzhofberger", "Rüdesheimer Berg"], "c": 0, "e": "Fritz Haag בבראונברג הוא אדון ה-Brauneberger Juffer וה-Juffer Sonnenuhr, כרם שנחשב כבר במאה ה-19 לאחד הטובים במוזל."}, {"q": "למה מפורסמים היינות של JJ Prüm?", "o": ["הם נועדו לשתייה מיידית", "הם דורשים שנים של התיישנות כדי להיפתח", "הם תמיד יבשים לגמרי", "הם מיוצרים מפינו נואר"], "c": 1, "e": "ריזלינג של JJ Prüm ידוע בסגנון מופנם בצעירותו, שנפתח יפה אחרי שנים ואף עשורים במרתף. סבלנות משתלמת."}, {"q": "מבין דרגות ה-Prädikat, איזו מסמנת את הענבים הבשלים/מרוכזים ביותר?", "o": ["Kabinett", "Spätlese", "Auslese", "Trockenbeerenauslese"], "c": 3, "e": "הסולם לפי בשלות: Kabinett ← Spätlese ← Auslese ← Beerenauslese ← Trockenbeerenauslese. ה-TBA עשוי מגרגרים מצומקים עם רקב אציל, נדיר ומתוק במיוחד."}, {"q": "מה אומרת המילה \"Trocken\" על תווית גרמנית?", "o": ["יבש", "מתוק", "מבעבע", "מיושן בחבית"], "c": 0, "e": "Trocken = יבש. Halbtrocken = חצי-יבש. הרבה מיינות המוזל הקלאסיים הם דווקא חצי-יבשים (feinherb), איזון יפה בין חומציות למתיקות."}, {"q": "ממה מכינים Eiswein (יין קרח)?", "o": ["ענבים שקפאו על הגפן ונקטפו קפואים", "ענבים שהוקפאו במקרר", "ענבים שיובשו בשמש", "קרח מהנהר"], "c": 0, "e": "Eiswein נעשה מענבים שקפאו על הגפן ונקטפים קפואים, לרוב בלילה קר בדצמבר. הסחיטה מפרידה מים קפואים ומשאירה תמצית מתוקה ומרוכזת."}, {"q": "מה מפורסם בנוימאגן-דרון, שם תעשו הפלגה?", "o": ["שחזור ספינת יין רומית", "מגדל השעון הגבוה בגרמניה", "מפל מים", "מכרה זהב"], "c": 0, "e": "בנוימאגן נמצאה אבן מצבה רומית בצורת ספינת יין (~220 לספירה), האנדרטה העתיקה ביותר לסחר יין מצפון לאלפים. תפליגו על שחזור שלה."}, {"q": "מסעדת Schanz (ערב המישלן) יושבת בלב איזה כרם מפורסם?", "o": ["Piesporter Goldtröpfchen", "Bernkasteler Doctor", "Scharzhofberger", "Wehlener Sonnenuhr"], "c": 0, "e": "Schanz בפיספורט נמצאת ליד ה-Goldtröpfchen (\"טיפות הזהב\"), אמפיתיאטרון תלול של צפחה כחולה מעל הנהר, מהכרמים המפורסמים בעולם."}, {"q": "איזה זן עתיק עדיין גדל במוזל העליון, ליד טרייר ולוקסמבורג?", "o": ["אלבלינג (Elbling)", "קברנה סוביניון", "גוורצטרמינר", "סירה"], "c": 0, "e": "אלבלינג הוא זן עתיק שכבר הרומאים גידלו, ועדיין נפוץ במוזל העליון. נותן יין קליל, חמצמץ ורענן, לרוב כבסיס למבעבע."}, {"q": "מה מסמן נשר ה-VDP על בקבוק גרמני?", "o": ["יין נטול אלכוהול", "יקב מובחר מאיגוד היקבים המובילים", "יין אורגני בלבד", "יין מיובא"], "c": 1, "e": "VDP הוא איגוד היקבים המובילים בגרמניה, והנשר על הקפסולה מסמן חברות בו. Grosses Gewächs (GG) הוא סימון היין היבש מהכרם המדורג הגבוה."}, {"q": "למה ריזלינג של המוזל לרוב נמוך יחסית באלכוהול?", "o": ["מוסיפים לו מים", "אקלים קריר, חומציות גבוהה ולעיתים סוכר שיורי", "מזקקים אותו", "קוטפים אותו ירוק לגמרי"], "c": 1, "e": "באקלים הקריר הענבים שומרים חומציות גבוהה, וחלק מהסוכר נשאר כמתיקות עדינה במקום אלכוהול. התוצאה: יין קליל (לעיתים 7.5-9%) ומאוזן."}, {"q": "במה חריג הכרם Ürziger Würzgarten (\"גן התבלינים\")?", "o": ["קרקע צפחה אדומה נדירה", "הוא מתחת לפני המים", "גדלים בו רק ענבים שחורים", "אין בו שמש"], "c": 0, "e": "ה-Würzgarten יושב על צפחה אדומה וחרסית עשירה בברזל, נדירה במוזל, שנותנת לריזלינג ארומות מתובלות ואקזוטיות, ומכאן השם."}, {"q": "איזה כינוי דבק בכפר ביילשטיין שתבקרו בו?", "o": ["פנינת המוזל", "בירת היין", "שער הדרום", "כפר הרוחות"], "c": 0, "e": "ביילשטיין מכונה \"פנינת המוזל\", כפר ברוקי זעיר שכמעט לא השתנה, עם חורבות טירת Metternich מעליו וסמטאות אבן ציוריות."}, {"q": "איזו טירה משקיפה על קוכם, בסיס הלינה הראשון?", "o": ["רייכסבורג (Reichsburg)", "נוישוונשטיין", "היידלברג", "וורטבורג"], "c": 0, "e": "טירת רייכסבורג ניצבת מעל קוכם. המקור מהמאה ה-11, נהרסה בידי הצרפתים ב-1689 ונבנתה מחדש בסגנון ניאו-גותי במאה ה-19."}, {"q": "אילו שני יובלים מפורסמים מזינים את אזור היין של המוזל?", "o": ["הזאר (Saar) והרוור (Ruwer)", "הריין והמיין", "האינן והלך", "האלבה והאודר"], "c": 0, "e": "האזור נקרא בעבר Mosel-Saar-Ruwer. הזאר והרוור, שני יובלים קטנים ליד טרייר, נותנים ריזלינג רזה, מתוח ומינרלי במיוחד."}], "en": [{"q": "What makes the Mosel such a special Riesling region?", "o": ["An unusually tropical climate", "Slate soil that stores heat and steep sun-facing slopes", "Irrigation from the river", "A law banning other grapes there"], "c": 1, "e": "Slate (Schiefer) soaks up heat by day and radiates it back at night, and the steep slopes catch every ray. That is what lets Riesling ripen this far north."}, {"q": "Which city is considered the oldest in Germany?", "o": ["Cologne", "Berlin", "Trier", "Mainz"], "c": 2, "e": "Trier was founded by the Romans around 16 BC. The Porta Nigra is the best-preserved Roman city gate north of the Alps."}, {"q": "According to legend, what did the wine from the Bernkasteler Doctor vineyard do?", "o": ["Cured a sick archbishop", "Replaced water during a plague", "Was served at an emperor's wedding", "Was paid as a tax to the Vatican"], "c": 0, "e": "Legend says Archbishop Boemund II recovered after drinking the wine and named the vineyard 'Doctor'. Today it is one of Germany's priciest vineyards."}, {"q": "What is a 'Sonnenuhr' in vineyard names (Wehlener Sonnenuhr, Juffer Sonnenuhr)?", "o": ["A rare grape variety", "A sundial built in the vineyard", "A type of barrel", "A government quality seal"], "c": 1, "e": "Sonnenuhr means sundial. They were built in the steep vineyards to give workers a clock, and they mark the best, most sun-facing parcels."}, {"q": "What is special about the Calmont vineyard near Bremm that you'll cross?", "o": ["Europe's steepest vineyard (~65°)", "The world's oldest vineyard", "The only one with no slate", "Germany's largest vineyard"], "c": 0, "e": "The Calmont is among the world's steepest vineyards, up to ~65 degrees. Growers work it with harnesses, and it has a via ferrata."}, {"q": "Which grape dominates the Mosel, over 60% of the area?", "o": ["Chardonnay", "Riesling", "Pinot Noir", "Merlot"], "c": 1, "e": "Riesling is the signature grape of the Mosel and covers most vineyards. The slate and cool climate give it razor-sharp acidity and mineral aromas."}, {"q": "Where does the Mosel river flow into?", "o": ["The Rhine at Koblenz", "The North Sea", "The Danube", "Lake Constance"], "c": 0, "e": "The Mosel joins the Rhine at Koblenz, at the 'German Corner' (Deutsches Eck). Winningen, home of HL, sits just before the confluence."}, {"q": "In which village is the Heymann-Löwenstein winery you'll visit?", "o": ["Bernkastel", "Winningen", "Piesport", "Brauneberg"], "c": 1, "e": "HL sits in Winningen on the Lower Mosel (Terrassenmosel), the northern end of the valley. They pioneer dry Riesling from steep terraces, in the Uhlen and Röttgen sites."}, {"q": "At Markus Molitor, what do the capsule colors (white/green/gold) indicate?", "o": ["The wine's age", "Sweetness level: dry / off-dry / sweet", "A price rating", "The barrel type"], "c": 1, "e": "Molitor signals it on the capsule: white = dry, green = off-dry, gold = sweet. A clever system, since the same vineyard can yield wine at any sweetness level."}, {"q": "Which famous vineyard is the Dr. Loosen winery tied to?", "o": ["Wehlener Sonnenuhr", "Château Margaux", "Clos de Vougeot", "Barolo"], "c": 0, "e": "Dr. Loosen holds parcels in the Mosel's grand sites, including Wehlener Sonnenuhr and Erdener Prälat. Ernst Loosen helped put the Mosel back on the world map."}, {"q": "Which vineyard is the Fritz Haag winery identified with?", "o": ["Brauneberger Juffer", "Piesporter Goldtröpfchen", "Scharzhofberger", "Rüdesheimer Berg"], "c": 0, "e": "Fritz Haag in Brauneberg is the master of the Brauneberger Juffer and Juffer Sonnenuhr, a site rated among the Mosel's best already in the 19th century."}, {"q": "What are the wines of JJ Prüm famous for?", "o": ["Being meant to drink immediately", "Needing years of aging to open up", "Always being bone dry", "Being made from Pinot Noir"], "c": 1, "e": "JJ Prüm Riesling is reserved when young and blossoms beautifully after years, even decades, in the cellar. Patience pays off."}, {"q": "Among the Prädikat levels, which marks the ripest / most concentrated grapes?", "o": ["Kabinett", "Spätlese", "Auslese", "Trockenbeerenauslese"], "c": 3, "e": "The ripeness ladder: Kabinett to Spätlese to Auslese to Beerenauslese to Trockenbeerenauslese. TBA is made from shriveled, nobly-rotten berries, rare and intensely sweet."}, {"q": "What does the word 'Trocken' mean on a German label?", "o": ["Dry", "Sweet", "Sparkling", "Barrel-aged"], "c": 0, "e": "Trocken = dry. Halbtrocken = off-dry. Many classic Mosel wines are actually off-dry (feinherb), a lovely balance of acidity and sweetness."}, {"q": "What is Eiswein (ice wine) made from?", "o": ["Grapes frozen on the vine, picked frozen", "Grapes frozen in a freezer", "Sun-dried grapes", "Ice from the river"], "c": 0, "e": "Eiswein is made from grapes that freeze on the vine and are picked frozen, often on a cold December night. Pressing leaves the ice behind and yields a concentrated, sweet nectar."}, {"q": "What is Neumagen-Dhron, where you'll take a boat trip, famous for?", "o": ["A reconstructed Roman wine ship", "Germany's tallest clock tower", "A waterfall", "A gold mine"], "c": 0, "e": "A Roman stone monument shaped like a wine ship (~220 AD) was found in Neumagen, the oldest wine-trade monument north of the Alps. You'll sail on a replica."}, {"q": "The Schanz restaurant (your Michelin night) sits in the heart of which famous vineyard?", "o": ["Piesporter Goldtröpfchen", "Bernkasteler Doctor", "Scharzhofberger", "Wehlener Sonnenuhr"], "c": 0, "e": "Schanz in Piesport sits by the Goldtröpfchen ('little gold drops'), a steep amphitheater of blue slate above the river and one of the world's most famous vineyards."}, {"q": "Which ancient grape is still grown on the Upper Mosel, near Trier and Luxembourg?", "o": ["Elbling", "Cabernet Sauvignon", "Gewürztraminer", "Syrah"], "c": 0, "e": "Elbling is an ancient grape the Romans already grew, still common on the Upper Mosel. It gives a light, tart, fresh wine, often a base for sparkling."}, {"q": "What does the VDP eagle on a German bottle indicate?", "o": ["A non-alcoholic wine", "A top estate in the leading growers' association", "An organic wine only", "An imported wine"], "c": 1, "e": "The VDP is Germany's association of top wine estates, and the eagle on the capsule marks membership. Grosses Gewächs (GG) is the label for a dry wine from the highest-classified vineyard."}, {"q": "Why is Mosel Riesling often relatively low in alcohol?", "o": ["Water is added", "Cool climate, high acidity and sometimes residual sugar", "It is distilled", "It is picked completely green"], "c": 1, "e": "In the cool climate the grapes keep high acidity, and some sugar stays as gentle sweetness instead of turning to alcohol. The result: a light (sometimes 7.5-9%), balanced wine."}, {"q": "What is unusual about the Ürziger Würzgarten ('spice garden') vineyard?", "o": ["Rare red slate soil", "It is underwater", "Only black grapes grow there", "It gets no sun"], "c": 0, "e": "The Würzgarten sits on red slate and iron-rich clay, rare on the Mosel, giving the Riesling spicy, exotic aromas, hence the name."}, {"q": "What nickname is attached to the village of Beilstein you'll visit?", "o": ["The Pearl of the Mosel", "The wine capital", "The southern gate", "The ghost village"], "c": 0, "e": "Beilstein is called the 'Pearl of the Mosel', a tiny baroque village barely changed over time, with the Metternich castle ruins above and picturesque stone alleys."}, {"q": "Which castle overlooks Cochem, your first home base?", "o": ["Reichsburg", "Neuschwanstein", "Heidelberg", "Wartburg"], "c": 0, "e": "The Reichsburg stands above Cochem. The original dates to the 11th century, was destroyed by the French in 1689 and rebuilt in neo-Gothic style in the 19th century."}, {"q": "Which two famous tributaries feed the Mosel wine region?", "o": ["The Saar and the Ruwer", "The Rhine and the Main", "The Inn and the Lech", "The Elbe and the Oder"], "c": 0, "e": "The region was formerly called Mosel-Saar-Ruwer. The Saar and Ruwer, two small tributaries near Trier, give especially lean, taut, mineral Riesling."}]};
+
+function _shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const quizTxt = {
-  he:{score:'התוצאה שלכם: <b>{n}</b> מתוך 10 · ', lv:['מתחילים חמודים, בדיוק בשביל זה יש את הטיול 🍇','לא רע בכלל! אתם מגיעים מוכנים 🥂','מרשים! אתם כבר חצי מדריכי מוזל 🏆']},
-  en:{score:'Your score: <b>{n}</b> out of 10 · ', lv:['Charming beginners, that is exactly what the trip is for 🍇','Not bad at all! You are arriving prepared 🥂','Impressive! You are already half a Mosel guide 🏆']}
+  he:{score:'התוצאה שלכם: <b>{n}</b> מתוך {t} · ', lv:['מתחילים חמודים, בדיוק בשביל זה יש את הטיול 🍇','לא רע בכלל! אתם מגיעים מוכנים 🥂','מרשים! אתם כבר חצי מדריכי מוזל 🏆']},
+  en:{score:'Your score: <b>{n}</b> out of {t} · ', lv:['Charming beginners, that is exactly what the trip is for 🍇','Not bad at all! You are arriving prepared 🥂','Impressive! You are already half a Mosel guide 🏆']}
 };
-document.querySelectorAll('.quiz').forEach(quiz => {
-  const qlang = quiz.dataset.quiz;
-  const qs = quiz.querySelectorAll('.quiz-q');
-  const scoreEl = quiz.querySelector('.quiz-score');
-  let answered = 0, correct = 0;
-  qs.forEach(q => {
+function renderQuiz(qlang){
+  const quiz = document.querySelector('.quiz[data-quiz="'+qlang+'"]');
+  if(!quiz) return;
+  const scoreEl = quiz.parentElement.querySelector('.quiz-score');
+  if(scoreEl){ scoreEl.style.display='none'; scoreEl.innerHTML=''; }
+  const bank = (QUIZ_BANK[qlang]||[]).slice();
+  const picked = _shuffle(bank).slice(0,10);
+  let html='';
+  picked.forEach((it, idx) => {
+    const opts = it.o.map((t,i)=>({t:t, c:(i===it.c)}));
+    _shuffle(opts);
+    let ob='';
+    opts.forEach(o => { ob += '<button class="qopt"'+(o.c?' data-c="1"':'')+'>'+o.t+'</button>'; });
+    html += '<div class="quiz-q"><h4><span class="qnum">'+(idx+1)+'</span>'+it.q+'</h4><div class="qopts">'+ob+'</div><div class="qexp">'+it.e+'</div></div>';
+  });
+  quiz.innerHTML = html;
+  const total = picked.length;
+  let answered=0, correct=0;
+  quiz.querySelectorAll('.quiz-q').forEach(q => {
     q.querySelectorAll('.qopt').forEach(btn => {
       btn.addEventListener('click', () => {
-        if (q.classList.contains('answered')) return;
-        q.classList.add('answered');
-        answered++;
-        if (btn.dataset.c) { correct++; btn.classList.add('correct'); }
-        else {
-          btn.classList.add('wrong');
-          q.querySelector('[data-c]').classList.add('correct');
-        }
+        if(q.classList.contains('answered')) return;
+        q.classList.add('answered'); answered++;
+        if(btn.dataset.c){ correct++; btn.classList.add('correct'); }
+        else { btn.classList.add('wrong'); q.querySelector('[data-c]').classList.add('correct'); }
         q.querySelectorAll('.qopt').forEach(b => b.disabled = true);
-        if (answered === qs.length) {
-          const lv = correct <= 4 ? 0 : (correct <= 7 ? 1 : 2);
-          scoreEl.innerHTML = quizTxt[qlang].score.replace('{n}', correct) + quizTxt[qlang].lv[lv];
-          scoreEl.style.display = 'block';
+        if(answered === total){
+          const lv = correct<=4 ? 0 : (correct<=7 ? 1 : 2);
+          scoreEl.innerHTML = quizTxt[qlang].score.replace('{n}',correct).replace('{t}',total) + quizTxt[qlang].lv[lv];
+          scoreEl.style.display='block';
           scoreEl.scrollIntoView({behavior:'smooth', block:'center'});
         }
       });
     });
   });
+}
+document.querySelectorAll('.quiz-restart').forEach(b => {
+  b.addEventListener('click', () => { renderQuiz(b.dataset.quiz); const c=document.querySelector('.quiz[data-quiz="'+b.dataset.quiz+'"]'); if(c) c.scrollIntoView({behavior:'smooth', block:'start'}); });
 });
+renderQuiz('he'); renderQuiz('en');
 
 applyLang();
 </script>
