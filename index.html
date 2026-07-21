@@ -1378,13 +1378,13 @@ function applyLang(){
   document.getElementById('page-en').hidden = (lang !== 'en');
   document.documentElement.lang = lang;
   document.documentElement.dir = (lang === 'he') ? 'rtl' : 'ltr';
+  updateQuizFabs();
+  updateTrackerFabs();
   langBtn.textContent = T[lang].langBtn;
   fsBtn.textContent = mapWrap.classList.contains('fullscreen') ? T[lang].fsClose : T[lang].fs;
   refreshPopups();
   map.closePopup();
   placeMap();
-  updateQuizFabs();
-  updateTrackerFabs();
   window.scrollTo({top:0});
 }
 langBtn.addEventListener('click', () => { lang = (lang === 'he') ? 'en' : 'he'; applyLang(); });
@@ -1454,9 +1454,8 @@ function renderQuiz(qlang){
 document.querySelectorAll('.quiz-restart').forEach(b => {
   b.addEventListener('click', () => { renderQuiz(b.dataset.quiz); const c=document.querySelector('.quiz[data-quiz="'+b.dataset.quiz+'"]'); if(c) c.scrollIntoView({behavior:'smooth', block:'start'}); });
 });
-renderQuiz('he'); renderQuiz('en');
-
 applyLang();
+try { renderQuiz('he'); renderQuiz('en'); } catch(e){ console.error('quiz init failed:', e); }
 </script>
 
 </body>
